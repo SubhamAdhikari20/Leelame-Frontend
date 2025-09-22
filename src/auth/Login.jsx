@@ -69,7 +69,8 @@ const Login = () => {
                 dispatch(loginSuccess(response.data));
                 navigate("/dashboard");
                 return;
-            } else {
+            }
+            else {
                 toast.warning("Account Not Verified", {
                     description:
                         "Please verify your email to access your account.",

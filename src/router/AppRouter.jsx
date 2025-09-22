@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 import MainLayout from "../layouts/MainLayout.jsx";
 import SignUp from "../auth/SignUp.jsx";
 import Login from "../auth/Login.jsx";
+import VerifyAccountRegistration from "../auth/VerifyAccountRegistration.jsx";
 // import ForgotPassword from "../auth/ForgotPassword.jsx";
-// import VerifyAccountRegistration from "../auth/VerifyAccountRegistration.jsx";
 // import VerifyAccountResetPassword from "../auth/VerifyAccountResetPassword.jsx";
 // import ResetPassword from "../auth/ResetPassword.jsx";
 
@@ -32,6 +32,7 @@ const AppRouter = () => {
                         <Route element={<MainLayout currentUser={currentUser} />}>
                             {/* <Route path="/" element={<Homepage />} /> */}
                             <Route path="/sign-up" element={<SignUp />} />
+                            <Route path="/verify-account-registration/:username" element={<VerifyAccountRegistration />} />
                             <Route path="/login" element={<Login />} />
                             {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
                         </Route>
