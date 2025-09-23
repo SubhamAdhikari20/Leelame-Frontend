@@ -6,9 +6,9 @@ import MainLayout from "../layouts/MainLayout.jsx";
 import SignUp from "../auth/SignUp.jsx";
 import Login from "../auth/Login.jsx";
 import VerifyAccountRegistration from "../auth/VerifyAccountRegistration.jsx";
-// import ForgotPassword from "../auth/ForgotPassword.jsx";
-// import VerifyAccountResetPassword from "../auth/VerifyAccountResetPassword.jsx";
-// import ResetPassword from "../auth/ResetPassword.jsx";
+import ForgotPassword from "../auth/ForgotPassword.jsx";
+import VerifyAccountResetPassword from "../auth/VerifyAccountResetPassword.jsx";
+import ResetPassword from "../auth/ResetPassword.jsx";
 
 
 const AppRouter = () => {
@@ -24,9 +24,7 @@ const AppRouter = () => {
                                 {/* <Route path="/" element={<Homepage />} /> */}
                             </Route>
                         </Routes>
-                    ) : (
-                        {/* currentUser.role === "admin" */ }
-                    )
+                    ) : null // currentUser.role === "admin"
                 ) : (
                     <Routes>
                         <Route element={<MainLayout currentUser={currentUser} />}>
@@ -34,7 +32,9 @@ const AppRouter = () => {
                             <Route path="/sign-up" element={<SignUp />} />
                             <Route path="/verify-account-registration/:username" element={<VerifyAccountRegistration />} />
                             <Route path="/login" element={<Login />} />
-                            {/* <Route path="/forgot-password" element={<ForgotPassword />} /> */}
+                            <Route path="/forgot-password" element={<ForgotPassword />} />
+                            <Route path="/verify-account-reset-password/:email" element={<VerifyAccountResetPassword />} />
+                            <Route path="/reset-password/:email" element={<ResetPassword />} />
                         </Route>
                     </Routes>
                 )}

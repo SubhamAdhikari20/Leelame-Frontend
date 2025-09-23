@@ -1,10 +1,11 @@
+// frontend/src/schemas/auth/loginSchema.js
 import { z } from "zod";
 
 export const loginSchema = z.object({
     // Identifier = Username OR Email
     identifier: z.string().min(3, { message: "Username or Email is required" }),
     password: z.string().min(1, { message: "Password is required" }),
-    role: z.enum(["bidder", "admin"], {
-        required_error: "Role is required",
-    })
+    // role: z.enum(["bidder", "admin"], {
+    //     required_error: "Role is required",
+    // })
 });

@@ -17,7 +17,7 @@ export const verifyAccountForRegistration = async (data) => Api.put("/user/verif
 
 // Login User
 export const loginUser = async (data) => Api.post("/user/login-user", data);
-export const sendVerificationEmailForRegistration = async (email) => Api.put("/user/send-verification-email-registration", email);
+export const sendVerificationEmailForRegistration = async (email) => Api.put("/user/send-verification-email-registration", { email });
 export const loginUserWithGoogle = async (access_token) => Api.post("/user/google-login", { access_token });
 
 // Forgot Password

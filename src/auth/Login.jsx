@@ -1,5 +1,5 @@
 // frontend/src/auth/Login.jsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
@@ -30,13 +30,17 @@ import { loginSchema } from "../schemas/auth/loginSchema.js";
 import { FcGoogle } from "react-icons/fc"
 import { useGoogleLogin } from '@react-oauth/google';
 import { loginUser, loginUserWithGoogle, sendVerificationEmailForRegistration } from "../api/Api.js";
-import { loginSuccess } from "../redux/reducers/userSlice.js";
+import { loginSuccess, logout } from "../redux/reducers/userSlice.js";
 
 
 const Login = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(logout());
+    }, [dispatch]);
 
     // OTP dialog state
     const [dialogOpen, setDialogOpen] = useState(false);
@@ -67,7 +71,7 @@ const Login = () => {
                     description: response.data.message,
                 });
                 dispatch(loginSuccess(response.data));
-                navigate("/dashboard");
+                navigate(`/${user.username}/dashboard`);
                 return;
             }
             else {
