@@ -71,7 +71,7 @@ const Login = () => {
                     description: response.data.message,
                 });
                 dispatch(loginSuccess(response.data));
-                navigate(`/${user.username}/dashboard`);
+                navigate(`/`);
                 return;
             }
             else {

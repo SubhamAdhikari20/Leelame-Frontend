@@ -1,7 +1,7 @@
 // frontend/src/layouts/Navbar.jsx
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar.jsx";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -12,8 +12,9 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "../components/ui/button";
+} from "../components/ui/alert-dialog.jsx";
+import { Input } from "../components/ui/input.jsx";
+import { Button } from "../components/ui/button.jsx";
 import {
     FaBars,
     FaSearch,
@@ -22,9 +23,8 @@ import {
     FaUser,
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { logout } from "../redux/reducers/userSlice";
-import { Input } from "../components/ui/input";
-import Logo from "./../assets/leelame_logo_cropped_png.png";
+import { logout, updateUserDetails } from "../redux/reducers/userSlice.js";
+import { fetchCurrentUser } from "../api/Api.js";
 
 
 const Navbar = ({ currentUser }) => {
@@ -38,10 +38,20 @@ const Navbar = ({ currentUser }) => {
     const [feedOpen, setFeedOpen] = useState(false);
     const notifButtonRef = useRef(null);
 
-    // if (!currentUser) {
-    //     signOut();
-    //     return null;
-    // }
+    // useEffect(() => {
+    //     const getCurrentUser = async () => {
+    //         try {
+    //             const response = await fetchCurrentUser();
+    //             // console.log("User data:", res.data.user);
+    //             dispatch(updateUserDetails(response.data));
+    //         }
+    //         catch (error) {
+    //             console.error("Failed to fetch user:", error);
+    //             dispatch(logout());
+    //         }
+    //     };
+    //     // getCurrentUser();
+    // }, []);
 
     // Close desktop popover on outside click
     useEffect(() => {
@@ -104,7 +114,7 @@ const Navbar = ({ currentUser }) => {
                 <div className="flex items-center gap-15">
                     <Link to="/" className="flex items-center gap-2">
                         <img
-                            src={Logo}
+                            src="/images/leelame_logo_cropped_png.png"
                             alt="Leelame Logo"
                             width={50}
                             height={50}
@@ -383,7 +393,7 @@ const Navbar = ({ currentUser }) => {
                                     </div>
 
                                     <div className="border-t px-4 py-2 text-center text-xs text-gray-400">
-                                        Secured by <strong>Bike Buddy</strong>
+                                        Secured by <strong>Leelame</strong>
                                     </div>
                                 </div>
                             )}
@@ -434,8 +444,8 @@ const Navbar = ({ currentUser }) => {
             {/* Mobile Navigation Menu */}
             <nav
                 className={`lg:hidden bg-white shadow-md overflow-hidden transition-all duration-300 ${mobileMenuOpen
-                        ? "max-h-96 opacity-100"
-                        : "max-h-0 opacity-0"
+                    ? "max-h-96 opacity-100"
+                    : "max-h-0 opacity-0"
                     }`}
             >
                 <div className="container mx-auto px-4 py-4 flex justify-center items-center flex-col gap-4">

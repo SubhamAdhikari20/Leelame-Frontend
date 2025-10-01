@@ -40,7 +40,7 @@ const contactValidation = z      // Contact validation
     .max(10, { message: "Contact must be 10 digits long" })
     .regex(/^[0-9]+$/, { message: "Contact must contain only digits" });
 
-const roleValidation = z.enum(["bidder", "admin"], {     // Role validation
+const roleValidation = z.enum(["admin", "seller", "buyer"], {     // Role validation
     required_error: "Role is required",
 });
 

@@ -2,7 +2,6 @@
 import React from "react";
 import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Logo from "./../assets/leelame_logo2_cropped_png.png";
 
 
 const Footer = ({ currentUser }) => {
@@ -15,7 +14,7 @@ const Footer = ({ currentUser }) => {
                     <div className="flex items-center space-x-4">
                         <Link to="/">
                             <img
-                                src={Logo}
+                                src="images/leelame_logo2_cropped_png.png"
                                 alt="Leelame Logo"
                                 width={75}
                                 height={75}

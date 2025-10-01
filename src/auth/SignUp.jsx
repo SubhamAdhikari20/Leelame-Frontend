@@ -1,10 +1,9 @@
 // frontend/src/auth/SignUp.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { useDebounceValue, useDebounceCallback } from "usehooks-ts";
 import { toast } from "sonner";
 import { signUpSchema } from "../schemas/auth/signUpSchema.js";
@@ -51,6 +50,7 @@ const SignUp = () => {
             password: "",
             confirmPassword: "",
             terms: false,
+            role: "buyer",
         },
     });
 

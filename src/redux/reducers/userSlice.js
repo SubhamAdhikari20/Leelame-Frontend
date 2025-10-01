@@ -23,12 +23,17 @@ export const userSlice = createSlice({
         },
         updateUserDetails: (state, action) => {
             if (state.currentUser) {
-                state.currentUser = { ...state.user, ...action.payload };
+                state.currentUser = { ...state.currentUser, ...action.payload.user };
+            }
+        },
+        updateUserDetails: (state, action) => {
+            if (state.currentUser) {
+                state.currentUser = action.payload.user;
             }
         },
         updateProfilePictureSuccess: (state, action) => {
             if (state.currentUser) {
-                state.currentUser.profilePicture = action.payload;
+                state.currentUser.profilePictureUrl = action.payload.user.profilePictureUrl;
             }
         },
         deleteUserSuccess: (state) => {

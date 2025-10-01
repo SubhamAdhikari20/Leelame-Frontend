@@ -2,11 +2,11 @@
 import axios from "axios";
 
 const Api = axios.create({
-  baseURL: `http://localhost:7777/api`,
-  withCredentials: true,
-  headers: {
-    "Content-Type": "application/json",
-  },
+    baseURL: `http://localhost:7777/api`,
+    withCredentials: true,
+    headers: {
+        "Content-Type": "application/json",
+    },
 });
 
 // ------------------------------------------ User Authentication ----------------------------------------------
@@ -25,6 +25,16 @@ export const forgotPassword = async (data) => Api.put("/user/forgot-password", d
 export const verifyAccountForResetPassword = async (data) => Api.put("/user/verify-account-reset-password", data);
 export const resetPassword = async (data) => Api.put("/user/reset-password", data);
 
-
+// Get Current User
+// export const fetchCurrentUser = async () => Api.get("/user/get-current-user");
+export const fetchCurrentUser = async () => {
+    const token = localStorage.getItem("leelame-app-token");
+    if (!token) {
+        throw new Error("No authentication token found");
+    }
+    return await Api.get("/user/get-current-user", {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+};
 
 export default Api;
