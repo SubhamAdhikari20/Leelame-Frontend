@@ -9,6 +9,8 @@ const Api = axios.create({
     },
 });
 
+const token = localStorage.getItem("leelame-app-token");
+
 // ------------------------------------------ User Authentication ----------------------------------------------
 // Sign Up User
 export const registerUser = async (data) => Api.post("/user/register-user", data);
@@ -28,7 +30,6 @@ export const resetPassword = async (data) => Api.put("/user/reset-password", dat
 // Get Current User
 // export const fetchCurrentUser = async () => Api.get("/user/get-current-user");
 export const fetchCurrentUser = async () => {
-    const token = localStorage.getItem("leelame-app-token");
     if (!token) {
         throw new Error("No authentication token found");
     }
@@ -36,5 +37,42 @@ export const fetchCurrentUser = async () => {
         headers: { Authorization: `Bearer ${token}` }
     });
 };
+
+// Validate Username for Protected Routes
+export const validateUsernameProtectedRoutes = async (username) => Api.get(`/user/check-username?username=${username}`);
+
+// Edit User Details
+export const editUserDetails = async (userId, data) => {
+    if (!token) {
+        throw new Error("No authentication token found");
+    }
+    return await Api.put(`/user/update-user-details/${userId}`, {
+        data,
+        headers: { Authorization: `Bearer ${token}` }
+    });
+};
+
+// Delete User
+export const deleteUser = async (userId) => {
+    if (!token) {
+        throw new Error("No authentication token found");
+    }
+    return await Api.delete(`/user/delete-user/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+};
+
+// Public profile fetch
+export const fetchPublicProfile = async (username)   => Api.get(`/user/public-profile?username=${username}`);
+
+// export const fetchPublicProfile = async (username)   => {
+//     if (!token) {
+//         throw new Error("No authentication token found");
+//     }
+//     return await Api.get(`/user/public-profile?username=${username}`, {
+//         headers: { Authorization: `Bearer ${token}` }
+//     });
+// };
+
 
 export default Api;

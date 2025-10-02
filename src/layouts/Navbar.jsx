@@ -47,10 +47,10 @@ const Navbar = ({ currentUser }) => {
     //         }
     //         catch (error) {
     //             console.error("Failed to fetch user:", error);
-    //             dispatch(logout());
+    //             // dispatch(logout());
     //         }
     //     };
-    //     // getCurrentUser();
+    //     getCurrentUser();
     // }, []);
 
     // Close desktop popover on outside click
@@ -317,7 +317,7 @@ const Navbar = ({ currentUser }) => {
 
                                     <div className="grid grid-cols-2 gap-1 px-3 pb-3">
                                         <Link
-                                            to="/my-profile"
+                                            to={`/${currentUser.username}/my-profile`}
                                             className="flex items-center justify-center gap-2 px-2 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded hover:bg-gray-100"
                                             onClick={() => {
                                                 setDesktopMenuOpen(false);

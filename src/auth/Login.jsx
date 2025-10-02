@@ -71,7 +71,7 @@ const Login = () => {
                     description: response.data.message,
                 });
                 dispatch(loginSuccess(response.data));
-                navigate(`/`);
+                navigate("/");
                 return;
             }
             else {

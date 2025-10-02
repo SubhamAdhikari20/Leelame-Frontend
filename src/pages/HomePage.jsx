@@ -1,15 +1,18 @@
 // frontend/src/pages/HomePage.jsx
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-
-
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Loader2, Quote } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import Api, { validateUsernameUnique } from "../api/Api.js";
+import NotFoundPage from "./NotFoundPage.jsx";
 
 
 const HomePage = ({ currentUser }) => {
+    const { username } = useParams();
+    const [isValidUser, setIsValidUser] = useState(null);
+    const [phraseIndex, setPhraseIndex] = useState(0);
 
     // 1) Hero text phrases
     const phrases = currentUser
@@ -20,7 +23,6 @@ const HomePage = ({ currentUser }) => {
         ]
         : ["Leelame", "Your Bid Companion", "Bid with Peace of Mind"];
 
-    const [phraseIndex, setPhraseIndex] = useState(0);
     useEffect(() => {
         const iv = setInterval(
             () => setPhraseIndex((i) => (i + 1) % phrases.length),
@@ -28,6 +30,45 @@ const HomePage = ({ currentUser }) => {
         );
         return () => clearInterval(iv);
     }, [phrases.length]);
+
+    // // Check if username exists (only when visiting /:username route)
+    // useEffect(() => {
+    //     const checkUser = async () => {
+    //         if (!username) {
+    //             setIsValidUser(true); // homepage without username is always valid
+    //             return;
+    //         }
+    //         try {
+    //             const response = await Api.get(`/user/check-username?username=${username}`);
+    //             const exists = response.data.exists;
+
+    //             // Only allow if username exists and matches currentUser
+    //             if (exists && currentUser && username === currentUser.username) {
+    //                 setIsValidUser(true);
+    //             }
+    //             else {
+    //                 setIsValidUser(false);
+    //             }
+    //         }
+    //         catch (error) {
+    //             setIsValidUser(false);
+    //         }
+    //     };
+    //     checkUser();
+    // }, [username, currentUser]);
+
+    // if (isValidUser === null) {
+    //     return (
+    //         <section className="flex items-center justify-center h-screen">
+    //             <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
+    //         </section>
+    //     );
+    // }
+
+    // if (!isValidUser) {
+    //     return <NotFoundPage />;
+    // }
+
 
     return (
         <>

@@ -1,24 +1,36 @@
 // frontend/src/router/AppRouter.jsx
-import React, { useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUserDetails, logout } from "../redux/reducers/userSlice.js";
 import { fetchCurrentUser } from "../api/Api.js";
+
 import MainLayout from "../layouts/MainLayout.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
+import PublicRoute from "./PublicRoute.jsx";
+
+import HomePage from "../pages/HomePage.jsx";
+import UserProfile from "../pages/UserProfile.jsx";
+import ViewUserProfile from "../pages/ViewUserProfile.jsx";
+import NotFoundPage from "../pages/NotFoundPage.jsx";
+
 import SignUp from "../auth/SignUp.jsx";
 import Login from "../auth/Login.jsx";
 import VerifyAccountRegistration from "../auth/VerifyAccountRegistration.jsx";
 import ForgotPassword from "../auth/ForgotPassword.jsx";
 import VerifyAccountResetPassword from "../auth/VerifyAccountResetPassword.jsx";
 import ResetPassword from "../auth/ResetPassword.jsx";
-import HomePage from "../pages/HomePage.jsx";
+import { Loader2 } from "lucide-react";
+
 
 const AppRouter = () => {
     const { currentUser } = useSelector((state) => state.user);
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const getCurrentUser = async () => {
+            setLoading(true);
             try {
                 const response = await fetchCurrentUser();
                 // console.log("User data:", response.data.user);
@@ -28,54 +40,96 @@ const AppRouter = () => {
                 console.error("Failed to fetch user:", error);
                 // dispatch(logout());
             }
+            finally {
+                setLoading(false);
+            }
         };
         getCurrentUser();
     }, []);
 
+    if (loading) {
+        return (
+            <section className="flex items-center justify-center h-screen">
+                <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
+            </section>
+        );
+    }
+
     return (
-        <>
-            <Router>
-                {currentUser ? (
+        <Router>
+            <Routes>
+                {/* {currentUser ? (
                     currentUser.role === "buyer" ? (
-                        <Routes>
+                        // Protected Routes for 'buyers'
+                        <Route element={<ProtectedRoute currentUser={currentUser} role={["buyer"]} />}>
                             <Route element={<MainLayout currentUser={currentUser} />}>
-                                <Route path="/" element={<HomePage currentUser={currentUser} />} />
+                                <Route path="/" element={<Navigate to={`/${currentUser.username}`} replace />} />
+                                <Route path="/:username" element={<HomePage currentUser={currentUser} />} />
+                                <Route path="/:username/my-profile" element={<UserProfile currentUser={currentUser} />} />
                             </Route>
-                        </Routes>
+                        </Route>
                     ) : currentUser.role === "seller" ? (
-                        <Routes>
-                            <Route element={<MainLayout currentUser={currentUser} />}>
-                                <Route path="/" element={<HomePage currentUser={currentUser} />} />
+                        // Protected Routes for 'sellers'
+                        <Route element={<ProtectedRoute />}>
+                            <Route element={<MainLayout currentUser={currentUser} role={["seller"]} />}>
+                                <Route path="/:username" element={<HomePage currentUser={currentUser} />} />
                             </Route>
-                        </Routes>
+                        </Route>
                     ) : null // currentUser.role === "admin"
                 ) : (
-                    <Routes>
+                    // Public Routes
+                    <Route element={<PublicRoute />}>
                         <Route element={<MainLayout currentUser={currentUser} />}>
                             <Route path="/" element={<HomePage currentUser={currentUser} />} />
                             <Route path="/sign-up" element={<SignUp />} />
-                            <Route path="/verify-account-registration/:username" element={<VerifyAccountRegistration />} />
                             <Route path="/login" element={<Login />} />
                             <Route path="/forgot-password" element={<ForgotPassword />} />
+                            <Route path="/verify-account-registration/:username" element={<VerifyAccountRegistration />} />
                             <Route path="/verify-account-reset-password/:email" element={<VerifyAccountResetPassword />} />
                             <Route path="/reset-password/:email" element={<ResetPassword />} />
+
+                            <Route path="/:username" element={<ViewUserProfile currentUser={currentUser} />} />
                         </Route>
-                    </Routes>
-                )}
-                {/* <Routes>
+                    </Route>
+                )} */}
+
+
+                {/* Protected Routes for 'buyers' */}
+                <Route element={<ProtectedRoute currentUser={currentUser} role={["buyer"]} />}>
                     <Route element={<MainLayout currentUser={currentUser} />}>
-                        <Route path="/" element={<Homepage />} />
+                        {currentUser &&
+                            <Route path="/" element={<Navigate to={`/${currentUser.username}`} replace />} />
+                        }
+                        <Route path="/:username" element={<HomePage currentUser={currentUser} />} />
+                        <Route path="/:username/my-profile" element={<UserProfile currentUser={currentUser} />} />
+                    </Route>
+                </Route>
+
+                {/* Protected Routes for 'sellers' */}
+                <Route element={<ProtectedRoute currentUser={currentUser} role={["seller"]} />}>
+                    <Route element={<MainLayout currentUser={currentUser} />}>
+                        <Route path="/:username" element={<HomePage currentUser={currentUser} />} />
+                    </Route>
+                </Route>
+
+                { /* Public Routes */}
+                <Route element={<PublicRoute currentUser={currentUser} />}>
+                    <Route element={<MainLayout currentUser={currentUser} />}>
+                        <Route path="/" element={<HomePage currentUser={currentUser} />} />
                         <Route path="/sign-up" element={<SignUp />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
+                        <Route path="/verify-account-registration/:username" element={<VerifyAccountRegistration />} />
+                        <Route path="/verify-account-reset-password/:email" element={<VerifyAccountResetPassword />} />
+                        <Route path="/reset-password/:email" element={<ResetPassword />} />
+
+                        <Route path="/profile/:username" element={<ViewUserProfile currentUser={currentUser} />} />
                     </Route>
-                    <Route path="/verify-account-registration/:username" element={<VerifyAccountRegistration />} />
-                    <Route path="/verify-account-reset-password/:email" element={<VerifyAccountResetPassword />} />
-                    <Route path="/reset-password" element={<ResetPassword />} />
-                    <Route path="/reset-password/:email" element={<ResetPassword />} />
-                </Routes> */}
-            </Router>
-        </>
+                </Route>
+
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes >
+        </Router >
     );
 };
 
