@@ -28,7 +28,6 @@ export const verifyAccountForResetPassword = async (data) => Api.put("/user/veri
 export const resetPassword = async (data) => Api.put("/user/reset-password", data);
 
 // Get Current User
-// export const fetchCurrentUser = async () => Api.get("/user/get-current-user");
 export const fetchCurrentUser = async () => {
     if (!token) {
         throw new Error("No authentication token found");
@@ -46,8 +45,7 @@ export const editUserDetails = async (userId, data) => {
     if (!token) {
         throw new Error("No authentication token found");
     }
-    return await Api.put(`/user/update-user-details/${userId}`, {
-        data,
+    return await Api.put(`/user/update-user-details/${userId}`, data, {
         headers: { Authorization: `Bearer ${token}` }
     });
 };
@@ -62,17 +60,21 @@ export const deleteUser = async (userId) => {
     });
 };
 
-// Public profile fetch
-export const fetchPublicProfile = async (username)   => Api.get(`/user/public-profile?username=${username}`);
+// Upload Profile Picture
+export const uploadProfilePicture = async (formData) => {
+    if (!token) {
+        throw new Error("No authentication token found");
+    }
+    return await Api.put("/user/profile-picture", formData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+        },
+    });
+}
 
-// export const fetchPublicProfile = async (username)   => {
-//     if (!token) {
-//         throw new Error("No authentication token found");
-//     }
-//     return await Api.get(`/user/public-profile?username=${username}`, {
-//         headers: { Authorization: `Bearer ${token}` }
-//     });
-// };
+// Public profile fetch
+export const fetchPublicProfile = async (username) => Api.get(`/user/public-user-profile?username=${username}`);
 
 
 export default Api;

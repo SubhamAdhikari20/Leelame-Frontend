@@ -10,6 +10,8 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 import PublicRoute from "./PublicRoute.jsx";
 
 import HomePage from "../pages/HomePage.jsx";
+import AboutPage from "../pages/AboutPage.jsx";
+import ContactPage from "../pages/ContactPage.jsx";
 import UserProfile from "../pages/UserProfile.jsx";
 import ViewUserProfile from "../pages/ViewUserProfile.jsx";
 import NotFoundPage from "../pages/NotFoundPage.jsx";
@@ -116,6 +118,9 @@ const AppRouter = () => {
                 <Route element={<PublicRoute currentUser={currentUser} />}>
                     <Route element={<MainLayout currentUser={currentUser} />}>
                         <Route path="/" element={<HomePage currentUser={currentUser} />} />
+                        <Route path="/about" element={<AboutPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+
                         <Route path="/sign-up" element={<SignUp />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -123,7 +128,7 @@ const AppRouter = () => {
                         <Route path="/verify-account-reset-password/:email" element={<VerifyAccountResetPassword />} />
                         <Route path="/reset-password/:email" element={<ResetPassword />} />
 
-                        <Route path="/profile/:username" element={<ViewUserProfile currentUser={currentUser} />} />
+                        <Route path="/user/:username" element={<ViewUserProfile currentUser={currentUser} />} />
                     </Route>
                 </Route>
 

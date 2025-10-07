@@ -34,33 +34,33 @@ const Footer = ({ currentUser }) => {
                         </div>
                     </div>
                     {/* Navigation Links */}
-                    <div className="flex flex-wrap justify-center space-x-6">
-                        <Link to="/" className="hover:text-white text-sm">
+                    <div className="flex flex-wrap justify-center md:space-x-6 space-x-3">
+                        <Link to="/" className="hover:text-white md:text-sm text-[12.5px]">
                             Home
                         </Link>
                         <Link
                             to="/products"
-                            className="hover:text-white text-sm"
+                            className="hover:text-white md:text-sm text-[12.5px]"
                         >
                             Products
                         </Link>
                         {currentUser ? (
                             <Link
                                 to="/my-bids"
-                                className="hover:text-white text-sm"
+                                className="hover:text-white md:text-sm text-[12.5px]"
                             >
                                 My Bids
                             </Link>
                         ) : null}
-                        <Link to="/blog" className="hover:text-white text-sm">
+                        <Link to="/blog" className="hover:text-white md:text-sm text-[12.5px]">
                             Blog
                         </Link>
-                        <Link to="/about" className="hover:text-white text-sm">
+                        <Link to="/about" className="hover:text-white md:text-sm text-[12.5px]">
                             About
                         </Link>
                         <Link
                             to="/contact"
-                            className="hover:text-white text-sm"
+                            className="hover:text-white md:text-sm text-[12.5px]"
                         >
                             Contact
                         </Link>

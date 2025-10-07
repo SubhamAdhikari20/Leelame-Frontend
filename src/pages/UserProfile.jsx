@@ -30,7 +30,7 @@ import { updateUserDetailsSchema } from "../schemas/updateUserDetailsSchema.js";
 import { useDebounceValue, useDebounceCallback } from "usehooks-ts";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { editUserDetails, deleteUser, validateUsernameUnique, fetchCurrentUser } from "../api/Api.js";
+import { editUserDetails, deleteUser, validateUsernameUnique, fetchCurrentUser, uploadProfilePicture } from "../api/Api.js";
 import { logout, updateUserDetails } from "../redux/reducers/userSlice.js";
 
 
@@ -157,34 +157,26 @@ const UserProfile = ({ currentUser }) => {
     };
 
     const handleUploadImage = async () => {
+        if (!selectedFile) {
+            toast.error("Please select an image before uploading.");
+            return;
+        }
+
         setIsUploadingImage(true);
+
         try {
-            let imageUrl = "";
-            const file = fileInputRef.current?.files?.[0];
+            const formData = new FormData();
+            formData.append("profilePicture", selectedFile);
 
-            if (file) {
-                const uploadForm = new FormData();
-                uploadForm.append("image", file);
+            const response = await uploadProfilePicture(formData);
+            toast.success(response.data.message || "Profile picture updated successfully!");
 
-                try {
-                    const uploadResp = await axios.post < { url: string } > ("/api/upload-image", uploadForm);
-                    imageUrl = uploadResp.data.url;
-                }
-                catch (error) {
-                    toast.error(`Image upload failed: ${error.response?.data.message || "Unknown error"}`);
-                    return;
-                }
-            }
-
-            const profilePictureUrl = imageUrl;
-            const response = await axios.put < ApiResponse > (`/api/auth/edit-profile/${userId}`, { profilePictureUrl: profilePictureUrl });
-
-            toast.success(response.data.message);
-            await fetchUser();
+            await getCurrentUser();
             setPreview("");
+            setSelectedFile(null);
         }
         catch (error) {
-            console.error("Image upload failed", error);
+            // console.error("Image upload failed", error);
             toast.error(`Image upload failed: ${error.response?.data.message || "Unknown error"}`);
         }
         finally {

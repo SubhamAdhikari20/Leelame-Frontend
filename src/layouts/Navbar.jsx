@@ -280,7 +280,7 @@ const Navbar = ({ currentUser }) => {
 
                             {/* popover */}
                             {desktopMenuOpen && (
-                                <div className="absolute right-0 mt-2 w-70 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-50">
+                                <div className="absolute right-0 mt-3 w-70 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-50">
                                     <div className="px-4 py-3 text-center">
                                         <Avatar className="mx-auto h-12 w-12 border-1 border-gray-900">
                                             {currentUser.profilePictureUrl ? (
@@ -510,7 +510,7 @@ const Navbar = ({ currentUser }) => {
                     {currentUser ? (
                         <>
                             <Link
-                                to="/my-profile"
+                                to={`/${currentUser.username}/my-profile`}
                                 onClick={toggleMenu}
                                 className="flex items-center gap-2"
                             >
