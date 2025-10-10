@@ -13,47 +13,38 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "../components/ui/alert-dialog.jsx";
-import { Input } from "../components/ui/input.jsx";
 import { Button } from "../components/ui/button.jsx";
 import {
     FaBars,
+    FaFilter,
     FaSearch,
     FaSignOutAlt,
     FaTimes,
     FaUser,
 } from "react-icons/fa";
+import PortalWrapper from "./PortalWrapper.jsx";
+import {
+    NotificationFeedPopover,
+    NotificationIconButton,
+} from "@knocklabs/react";
 import { useDispatch } from "react-redux";
 import { logout, updateUserDetails } from "../redux/reducers/userSlice.js";
-import { fetchCurrentUser } from "../api/Api.js";
+import Searchbar from "../components/Searchbar.jsx";
+import ProfilePopover from "../components/ProfilePopOver.jsx";
 
 
 const Navbar = ({ currentUser }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const menuRef = useRef(null);
+    const notifButtonRef = useRef(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [desktopMenuOpen, setDesktopMenuOpen] = useState(false);
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-    const menuRef = useRef(null);
-
     const [feedOpen, setFeedOpen] = useState(false);
-    const notifButtonRef = useRef(null);
+    const [searchOpen, setSearchOpen] = useState(false);
 
-    // useEffect(() => {
-    //     const getCurrentUser = async () => {
-    //         try {
-    //             const response = await fetchCurrentUser();
-    //             // console.log("User data:", res.data.user);
-    //             dispatch(updateUserDetails(response.data));
-    //         }
-    //         catch (error) {
-    //             console.error("Failed to fetch user:", error);
-    //             // dispatch(logout());
-    //         }
-    //     };
-    //     getCurrentUser();
-    // }, []);
-
-    // Close desktop popover on outside click
+    // Close desktop profile popover on outside click
     useEffect(() => {
         function onClickOutside(e) {
             if (
@@ -109,7 +100,7 @@ const Navbar = ({ currentUser }) => {
 
     return (
         <header className="sticky top-0 inset-x-0 z-500 bg-white shadow-md transition-all">
-            <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-5">
+            <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3 md:gap-5">
                 {/* Branding */}
                 <div className="flex items-center gap-15">
                     <Link to="/" className="flex items-center gap-2">
@@ -177,78 +168,63 @@ const Navbar = ({ currentUser }) => {
                                 Contact
                             </Link>
                         </li>
-                        {/* {currentUser ? (
-                            <div className="flex items-center gap-4">
-                                <NotificationIconButton
-                                ref={notifButtonRef}
-                                onClick={() => setFeedOpen((v) => !v)}
-                                />
-                                {feedOpen && (
-                                    <PortalWrapper>
-                                    <NotificationFeedPopover
-                                    buttonRef={notifButtonRef as React.RefObject<HTMLElement>}
-                                    isVisible={feedOpen}
-                                    onClose={() => setFeedOpen(false)}
-                                    
-                                    />
-                                    </PortalWrapper>
-                                    )}
-                                    </div>
-                        ) : null} */}
                     </ul>
                 </div>
 
-                {/* Searchbar*/}
-                <form
-                    onSubmit={handleSubmit}
-                    className="hidden sm:flex items-center flex-1 max-w-3xl mx-4 xl:px-20"
-                    role="search"
-                    aria-label="Site search"
-                >
-                    <div className="relative flex-1 transition-shadow">
-                        {/* left icon inside input */}
-                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <FaSearch className="w-4 h-4 text-gray-400" />
-                        </div>
+                <div className="hidden lg:hidden xl:flex md:flex gap-2 items-center flex-1 mx-2 transition-all">
+                    {/* Searchbar*/}
+                    <Searchbar
+                        inputRef={inputRef}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        clearQuery={clearQuery}
+                        onSubmit={handleSubmit}
+                        placeholder="Search"
+                        className="flex-1 max-w-5xl"
+                        showButton={true}
+                    />
 
-                        {/* input */}
-                        <Input
-                            ref={inputRef}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={handleKeyDown}
-                            type="search"
-                            name="search"
-                            placeholder="Search"
-                            className={
-                                // dark pill style like your image
-                                "w-full rounded-bl-full rounded-tl-full text-gray-900 font-medium placeholder-gray-300 py-3 pl-10 pr-12 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white transition-colors"
-                            }
-                            aria-label="Search"
-                        />
-
-                        {/* clear (X) — shown only when there's text */}
-                        {searchQuery && (
-                            <button
-                                type="button"
-                                onClick={clearQuery}
-                                aria-label="Clear search"
-                                className="absolute inset-y-0 right-4 flex items-center pr-2 text-gray-300 hover:text-gray-100 focus:outline-none"
-                            >
-                                <FaTimes className="w-4 h-4" />
-                            </button>
-                        )}
-                    </div>
-
-                    {/* circular search button on right (icon-in-circle) */}
+                    {/* Filter button */}
                     <Button
-                        type="submit"
-                        aria-label="Search"
-                        className="inline-flex items-center justify-center rounded-br-full rounded-tr-full border border-gray-300 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                        type="button"
+                        onClick={() => setFilterOpen(true)}
+                        aria-label="Open filters"
+                        className="inline-flex items-center gap-1 rounded-sm border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 transition-colors p-2"
                     >
-                        <FaSearch className="w-5 h-5 text-gray-500" />
+                        <FaFilter className="w-4 h-4" />
                     </Button>
-                </form>
+
+                </div>
+
+                {/* Medium and Small Screens: Search Icon Button */}
+                <div className="flex md:hidden lg:flex xl:hidden items-center flex-1 justify-end">
+                    <button
+                        onClick={() => setSearchOpen(v => !v)}
+                        aria-label="Open search"
+                        className="p-2 rounded-full hover:bg-gray-100 transition"
+                    >
+                        <FaSearch className="text-gray-700 w-5 h-5" />
+                    </button>
+                </div>
+
+                {currentUser ? (
+                    <>
+                        <NotificationIconButton
+                            ref={notifButtonRef}
+                            onClick={() => setFeedOpen((v) => !v)}
+                        />
+                        {feedOpen && (
+                            <PortalWrapper>
+                                <NotificationFeedPopover
+                                    buttonRef={notifButtonRef}
+                                    isVisible={feedOpen}
+                                    onClose={() => setFeedOpen(false)}
+
+                                />
+                            </PortalWrapper>
+                        )}
+                    </>
+                ) : null}
 
                 {/* Desktop Navigation - Navbar Right*/}
                 <div className="hidden lg:flex items-center gap-8">
@@ -280,127 +256,17 @@ const Navbar = ({ currentUser }) => {
 
                             {/* popover */}
                             {desktopMenuOpen && (
-                                <div className="absolute right-0 mt-3 w-70 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-50">
-                                    <div className="px-4 py-3 text-center">
-                                        <Avatar className="mx-auto h-12 w-12 border-1 border-gray-900">
-                                            {currentUser.profilePictureUrl ? (
-                                                <AvatarImage
-                                                    src={
-                                                        currentUser.profilePictureUrl
-                                                    }
-                                                    alt={currentUser.fullName}
-                                                />
-                                            ) : (
-                                                <AvatarFallback>
-                                                    {(
-                                                        currentUser.fullName ??
-                                                        currentUser.username ??
-                                                        "U"
-                                                    )
-                                                        .split(" ")
-                                                        .map((n) => n[0])
-                                                        .join("")
-                                                        .toUpperCase()}
-                                                </AvatarFallback>
-                                            )}
-                                        </Avatar>
-                                        <h1 className="mt-2 font-bold text-gray-900">
-                                            {currentUser.fullName}
-                                        </h1>
-                                        <h2 className="mt-2 font-semibold text-gray-800">
-                                            {currentUser.username}
-                                        </h2>
-                                        <p className="text-sm text-gray-500 truncate">
-                                            {currentUser.email}
-                                        </p>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-1 px-3 pb-3">
-                                        <Link
-                                            to={`/${currentUser.username}/my-profile`}
-                                            className="flex items-center justify-center gap-2 px-2 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded hover:bg-gray-100"
-                                            onClick={() => {
-                                                setDesktopMenuOpen(false);
-                                                setMobileMenuOpen(false);
-                                            }}
-                                        >
-                                            <FaUser /> My Profile
-                                        </Link>
-                                        <AlertDialog
-                                            open={logoutDialogOpen}
-                                            onOpenChange={setLogoutDialogOpen}
-                                        >
-                                            <AlertDialogTrigger asChild>
-                                                <Button
-                                                    className="flex items-center justify-center gap-2 px-2 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded hover:bg-gray-100"
-                                                    onClick={() =>
-                                                        setLogoutDialogOpen(
-                                                            true
-                                                        )
-                                                    }
-                                                >
-                                                    <FaSignOutAlt /> Logout
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent className="rounded-lg">
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>
-                                                        Are you sure you want to
-                                                        logout?
-                                                    </AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This will end your
-                                                        session and return you
-                                                        to the sign-in page.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel
-                                                        onClick={() => {
-                                                            setLogoutDialogOpen(
-                                                                false
-                                                            );
-                                                            setDesktopMenuOpen(
-                                                                false
-                                                            );
-                                                            setMobileMenuOpen(
-                                                                false
-                                                            );
-                                                        }}
-                                                    >
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction
-                                                        className="bg-red-600 hover:bg-red-700 text-white"
-                                                        onClick={() => {
-                                                            handleLogout();
-                                                            setLogoutDialogOpen(
-                                                                false
-                                                            );
-                                                            setDesktopMenuOpen(
-                                                                false
-                                                            );
-                                                            setMobileMenuOpen(
-                                                                false
-                                                            );
-                                                        }}
-                                                    >
-                                                        Logout
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </div>
-
-                                    <div className="border-t px-4 py-2 text-center text-xs text-gray-400">
-                                        Secured by <strong>Leelame</strong>
-                                    </div>
-                                </div>
+                                <>
+                                    <ProfilePopover
+                                        currentUser={currentUser}
+                                        logoutDialogOpen={logoutDialogOpen}
+                                        setLogoutDialogOpen={setLogoutDialogOpen}
+                                        setDesktopMenuOpen={setDesktopMenuOpen}
+                                        setMobileMenuOpen={setMobileMenuOpen}
+                                        handleLogout={handleLogout}
+                                    />
+                                </>
                             )}
-
-                            {/* <Button variant="outline" size="sm" onClick={() => signOut()}>
-                                <FaSignOutAlt className="inline mr-1" /> Logout
-                            </Button> */}
                         </div>
                     ) : (
                         <div className="flex justify-evenly items-center gap-4">
@@ -438,6 +304,37 @@ const Navbar = ({ currentUser }) => {
                             <FaBars size={24} />
                         )}
                     </button>
+                </div>
+            </nav>
+
+            {/* Small or Medium Size Screen Searchbar Overlay */}
+            <nav className={`md:hidden lg:flex xl:hidden flex items-center bg-white shadow-md overflow-hidden transition-all duration-300 ${searchOpen
+                ? "max-h-50 opacity-100"
+                : "max-h-0 opacity-0"
+                }`}>
+                <div className="flex flex-1 gap-2 items-center max-w-xl md:max-w-2xl mx-auto px-3 sm:px-5 pt-1 pb-4">
+                    {/* Filter Button */}
+                    <Button
+                        type="button"
+                        onClick={() => setFilterOpen(true)}
+                        aria-label="Open filters"
+                        className="inline-flex items-center gap-1 rounded-sm border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 transition-colors p-2"
+                    >
+                        <FaFilter className="w-4 h-4" />
+                    </Button>
+
+                    {/* Searchbar */}
+                    <Searchbar
+                        inputRef={inputRef}
+                        searchQuery={searchQuery}
+                        setSearchQuery={setSearchQuery}
+                        clearQuery={clearQuery}
+                        onSubmit={handleSubmit}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Search"
+                        className="flex-1 max-w-2xl"
+                        showButton={true}
+                    />
                 </div>
             </nav>
 
@@ -534,7 +431,7 @@ const Navbar = ({ currentUser }) => {
                                         </AvatarFallback>
                                     )}
                                 </Avatar>{" "}
-                                My profile
+                                My Profile
                             </Link>
                             <AlertDialog>
                                 <AlertDialogTrigger asChild>
@@ -593,12 +490,6 @@ const Navbar = ({ currentUser }) => {
                             </Link>
                         </div>
                     )}
-
-                    {/* <div className="mt-4">
-                        <Link to="/sign-in" onClick={() => setMobileMenuOpen(false)}>
-                            <Button className="text-base">Login</Button>
-                        </Link>
-                    </div> */}
                 </div>
             </nav>
         </header>

@@ -8,6 +8,8 @@ import { Toaster } from './components/ui/sonner.jsx';
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 import { store, persistor } from "./redux/store.js";
+import KnockClientWrapper from './layouts/KnockClientWrapper.jsx';
+
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -15,7 +17,9 @@ createRoot(document.getElementById('root')).render(
         <Provider store={store}>
             <PersistGate persistor={persistor}>
                 <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-                    <App />
+                    <KnockClientWrapper>
+                        <App />
+                    </KnockClientWrapper>
                 </GoogleOAuthProvider>
             </PersistGate>
         </Provider>

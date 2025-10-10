@@ -77,4 +77,14 @@ export const uploadProfilePicture = async (formData) => {
 export const fetchPublicProfile = async (username) => Api.get(`/user/public-user-profile?username=${username}`);
 
 
+// ------------------------------------------ Notifications (Knock) ----------------------------------------------
+export const updateKnockUser = async (data) => {
+    if (!token) {
+        throw new Error("No authentication token found");
+    }
+    return await Api.post("/notification/knock/update-user", data, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+}
+
 export default Api;
