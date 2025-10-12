@@ -1,7 +1,7 @@
 // frontend/src/layouts/Navbar.jsx
 import React, { useRef, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar.jsx";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar.jsx";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -12,8 +12,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "../components/ui/alert-dialog.jsx";
-import { Button } from "../components/ui/button.jsx";
+} from "./ui/alert-dialog.jsx";
+import { Button } from "./ui/button.jsx";
 import {
     FaBars,
     FaFilter,
@@ -22,20 +22,22 @@ import {
     FaTimes,
     FaUser,
 } from "react-icons/fa";
-import PortalWrapper from "./PortalWrapper.jsx";
+import PortalWrapper from "../layouts/PortalWrapper.jsx";
 import {
     NotificationFeedPopover,
     NotificationIconButton,
 } from "@knocklabs/react";
 import { useDispatch } from "react-redux";
 import { logout, updateUserDetails } from "../redux/reducers/userSlice.js";
-import Searchbar from "../components/Searchbar.jsx";
-import ProfilePopover from "../components/ProfilePopOver.jsx";
+import Searchbar from "./Searchbar.jsx";
+import ProfilePopover from "./ProfilePopover.jsx";
 
 
 const Navbar = ({ currentUser }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const location = useLocation();
+    const currentPath = location.pathname;
     const menuRef = useRef(null);
     const notifButtonRef = useRef(null);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -43,6 +45,15 @@ const Navbar = ({ currentUser }) => {
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const [feedOpen, setFeedOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
+
+    const navLinks = [
+        { name: "Home", path: "/" },
+        { name: "Products", path: "/products" },
+        { name: "My Bids", path: "/my-bids", authRequired: true },
+        { name: "Blog", path: "/blog" },
+        { name: "About", path: "/about" },
+        { name: "Contact", path: "/contact" },
+    ];
 
     // Close desktop profile popover on outside click
     useEffect(() => {
@@ -118,56 +129,42 @@ const Navbar = ({ currentUser }) => {
 
                     {/* Desktop Navigation - Navbar Left*/}
                     <ul className="hidden lg:flex items-center gap-8 text-gray-700">
-                        <li>
-                            <Link
-                                to="/"
-                                className="hover:text-gray-900 text-sm"
-                            >
-                                Home
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/products"
-                                className="hover:text-gray-900 text-sm"
-                            >
-                                Products
-                            </Link>
-                        </li>
-                        {currentUser ? (
-                            <li>
-                                <Link
-                                    to="/my-bids"
-                                    className="hover:text-gray-900 text-sm"
-                                >
-                                    My Bids
-                                </Link>
-                            </li>
-                        ) : null}
-                        <li>
-                            <Link
-                                to="/blog"
-                                className="hover:text-gray-900 text-sm"
-                            >
-                                Blog
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/about"
-                                className="hover:text-gray-900 text-sm"
-                            >
-                                About
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/contact"
-                                className="hover:text-gray-900 text-sm"
-                            >
-                                Contact
-                            </Link>
-                        </li>
+                        {navLinks.map((link) => {
+                            if (link.authRequired && !currentUser) return null;
+                            const actualPath =
+                                link.path === "/"
+                                    ? currentUser
+                                        ? `/${currentUser.username}`
+                                        : "/"
+                                    : link.path;
+
+                            let isActive = false;
+                            if (link.path === "/") {
+                                if (currentUser) {
+                                    isActive = currentPath === `/${currentUser.username}`;
+                                }
+                                else {
+                                    isActive = currentPath === "/";
+                                }
+                            }
+                            else {
+                                isActive = currentPath === actualPath || currentPath.startsWith(actualPath);
+                            }
+
+                            return (
+                                <li key={link.path}>
+                                    <Link
+                                        to={actualPath}
+                                        className={`text-sm transition-colors ${isActive
+                                            ? "text-green-600 font-semibold border-b-2 border-green-600 pb-1"
+                                            : "hover:text-gray-900"
+                                            }`}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                </li>
+                            );
+                        })}
                     </ul>
                 </div>
 
@@ -254,7 +251,7 @@ const Navbar = ({ currentUser }) => {
                                 )}
                             </Avatar>
 
-                            {/* popover */}
+                            {/* Profile Popover */}
                             {desktopMenuOpen && (
                                 <>
                                     <ProfilePopover
@@ -347,67 +344,50 @@ const Navbar = ({ currentUser }) => {
             >
                 <div className="container mx-auto px-4 py-4 flex justify-center items-center flex-col gap-4">
                     <ul className="flex flex-col gap-4 text-gray-700">
-                        <li>
-                            <Link
-                                to="/"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="hover:text-gray-900 text-base"
-                            >
-                                Home
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/products"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="hover:text-gray-900 text-base"
-                            >
-                                Product
-                            </Link>
-                        </li>
-                        {currentUser ? (
-                            <li>
-                                <Link
-                                    to="/my-bids"
-                                    className="hover:text-gray-900 text-sm"
-                                >
-                                    My Bids
-                                </Link>
-                            </li>
-                        ) : null}
-                        <li>
-                            <Link
-                                to="/blog"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="hover:text-gray-900 text-sm"
-                            >
-                                Blog
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/about"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="hover:text-gray-900 text-sm"
-                            >
-                                About
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/contact"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="hover:text-gray-900 text-base"
-                            >
-                                Contact
-                            </Link>
-                        </li>
+                        {navLinks.map((link) => {
+                            if (link.authRequired && !currentUser) return null;
+
+                            const actualPath =
+                                link.path === "/"
+                                    ? currentUser
+                                        ? `/${currentUser.username}`
+                                        : "/"
+                                    : link.path;
+
+                            let isActive = false;
+                            if (link.path === "/") {
+                                if (currentUser) {
+                                    isActive = currentPath === `/${currentUser.username}`;
+                                }
+                                else {
+                                    isActive = currentPath === "/";
+                                }
+                            }
+                            else {
+                                isActive = currentPath === actualPath || currentPath.startsWith(actualPath);
+                            }
+
+                            return (
+                                <li key={link.path}>
+                                    <Link
+                                        to={actualPath}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className={`text-base transition-colors ${isActive
+                                            ? "text-green-600 font-semibold border-b-2 border-green-600 pb-1"
+                                            : "hover:text-gray-900"
+                                            }`}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                </li>
+                            );
+                        })}
                     </ul>
 
                     {currentUser ? (
                         <>
                             <Link
-                                to={`/${currentUser.username}/my-profile`}
+                                to={`/${currentUser.username}/my-profile/dashboard`}
                                 onClick={toggleMenu}
                                 className="flex items-center gap-2"
                             >

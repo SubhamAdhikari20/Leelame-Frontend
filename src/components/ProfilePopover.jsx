@@ -66,10 +66,9 @@ const ProfilePopover = ({
 
             {/* Action */}
             <div className="grid grid-cols-2 gap-1 px-3 pb-3">
-
                 {/* Profile Link */}
                 <Link
-                    to={`/${currentUser.username}/my-profile`}
+                    to={`/${currentUser.username}/my-profile/dashboard`}
                     className="flex items-center justify-center gap-2 px-2 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded hover:bg-gray-100"
                     onClick={() => {
                         setDesktopMenuOpen(false);

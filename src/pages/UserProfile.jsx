@@ -185,11 +185,11 @@ const UserProfile = ({ currentUser }) => {
     }
 
     return (
-        <section className="p-3 md:p-5 mx-auto md:max-w-7xl">
+        <section className="w-full xl:max-w-7xl bg-[#d3ecdc] rounded-xl shadow-lg p-5">
             <h1 className="text-2xl font-bold text-gray-800 mb-5">My Profile</h1>
-            <div className="bg-[#d3ecdc] flex flex-col md:flex-row md:justify-evenly gap-4 justify-center items-center rounded-xl shadow-lg py-7 px-4">
+            <div className="flex flex-col xl:flex-row xl:justify-evenly gap-4 justify-center">
                 <div className="flex flex-col justify-center items-center gap-4">
-                    <Avatar className="h-30 w-30 md:h-50 md:w-50 border-2 border-gray-900">
+                    <Avatar className="h-30 w-30 lg:h-45 lg:w-45 border-2 border-gray-900">
                         <AvatarImage
                             src={preview ? preview : (currentUser?.profilePictureUrl || undefined)}
                             alt={currentUser?.fullName || currentUser?.username || "Owner"}
@@ -259,9 +259,34 @@ const UserProfile = ({ currentUser }) => {
                             ) : <>Select Image to Upload</>}
                         </Button>
                     </div>
+
+                    <div className="mt-auto xl:w-full">
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button type="button" variant="destructive" className="w-full">
+                                    <Trash2 className="h-4 w-4 mr-2" /> Delete Account
+                                </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. This will permanently delete the user account
+                                        <strong> "{currentUser?.fullName}"</strong> and remove their data from the system.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={() => handleDelete(Number(currentUser?.id))}>
+                                        Confirm Delete
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
                 </div>
 
-                <div className="w-full flex-1 max-w-md space-y-8 bg-white p-8 rounded-lg shadow-lg">
+                <div className="w-full flex-1 max-w-2xl xl:max-w-xl space-y-8 bg-white p-8 rounded-lg shadow-lg">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
@@ -359,31 +384,6 @@ const UserProfile = ({ currentUser }) => {
                             </div>
                         </form>
                     </Form>
-                </div>
-
-                <div className="flex mt-auto md:self-end">
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button type="button" variant="destructive">
-                                <Trash2 className="h-4 w-4 mr-2" /> Delete Account
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete the user account
-                                    <strong> "{currentUser?.fullName}"</strong> and remove their data from the system.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleDelete(Number(currentUser?.id))}>
-                                    Confirm Delete
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
                 </div>
             </div>
         </section>

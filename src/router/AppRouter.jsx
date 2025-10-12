@@ -23,6 +23,8 @@ import ForgotPassword from "../auth/ForgotPassword.jsx";
 import VerifyAccountResetPassword from "../auth/VerifyAccountResetPassword.jsx";
 import ResetPassword from "../auth/ResetPassword.jsx";
 import { Loader2 } from "lucide-react";
+import ProfileLayout from "@/layouts/ProfileLayout.jsx";
+import ProfileDashboard from "@/pages/ProfileDashboard.jsx";
 
 
 const AppRouter = () => {
@@ -103,7 +105,11 @@ const AppRouter = () => {
                             <Route path="/" element={<Navigate to={`/${currentUser.username}`} replace />} />
                         }
                         <Route path="/:username" element={<HomePage currentUser={currentUser} />} />
-                        <Route path="/:username/my-profile" element={<UserProfile currentUser={currentUser} />} />
+
+                        <Route element={<ProfileLayout currentUser={currentUser} />}>
+                            <Route path="/:username/my-profile/dashboard" element={<ProfileDashboard currentUser={currentUser} />} />
+                            <Route path="/:username/my-profile/settings" element={<UserProfile currentUser={currentUser} />} />
+                        </Route>
                     </Route>
                 </Route>
 
