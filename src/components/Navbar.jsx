@@ -110,7 +110,7 @@ const Navbar = ({ currentUser }) => {
     };
 
     return (
-        <header className="sticky top-0 inset-x-0 z-500 bg-white shadow-md transition-all">
+        <header className="sticky top-0 inset-x-0 z-20 bg-white shadow-md transition-all">
             <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3 md:gap-5">
                 {/* Branding */}
                 <div className="flex items-center gap-15">
@@ -438,7 +438,7 @@ const Navbar = ({ currentUser }) => {
                                             Cancel
                                         </AlertDialogCancel>
                                         <AlertDialogAction
-                                            className="bg-red-600 hover:bg-red-700 text-white"
+                                            className="bg-green-600 hover:bg-green-700 text-white"
                                             onClick={() => {
                                                 handleLogout();
                                             }}

@@ -168,13 +168,13 @@ const HomePage = ({ currentUser }) => {
                     <h2 className="text-3xl font-bold text-center mb-8">Why Choose Leelame?</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {features.map((f, i) => (
-                            <Card key={i} className="p-0 gap-2 transition hover:shadow-md">
+                            <Card key={i} className="p-0 gap-2 transition-shadow hover:shadow-lg duration-200 overflow-hidden">
                                 <CardHeader className="p-0">
                                     <div className="relative h-60 w-full overflow-hidden">
                                         <img
                                             src={f.image}
                                             alt={f.title}
-                                            className="object-cover rounded-t-xl"
+                                            className="object-cover w-full h-full hover:scale-110 transition-transform duration-200"
                                         />
                                     </div>
                                     <CardTitle className="px-4 pt-2 text-xl font-semibold">
@@ -254,7 +254,8 @@ const HomePage = ({ currentUser }) => {
                     <div className="w-full max-w-3xl aspect-video rounded overflow-hidden shadow-lg">
                         <iframe
                             className="w-full h-full"
-                            src="https://www.youtube.com/embed/C-eCWfDIUXA?si=CrADAmA31-Hcqron"
+                            src="https://www.youtube.com/embed/w0B9ToQL34w?si=BZsvfPphF0q-6T7O"
+                            // src="https://www.youtube.com/embed/C-eCWfDIUXA?si=CrADAmA31-Hcqron"
                             title="Leelame Demo Video"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen

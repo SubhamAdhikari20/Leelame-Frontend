@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { updateUserDetails, logout } from "../redux/reducers/userSlice.js";
+import { Loader2 } from "lucide-react";
+import { updateUserDetails } from "../redux/reducers/userSlice.js";
 import { fetchCurrentUser } from "../api/Api.js";
 
 import MainLayout from "../layouts/MainLayout.jsx";
@@ -10,6 +11,7 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 import PublicRoute from "./PublicRoute.jsx";
 
 import HomePage from "../pages/HomePage.jsx";
+import ProductPage from "../pages/ProductPage.jsx";
 import AboutPage from "../pages/AboutPage.jsx";
 import ContactPage from "../pages/ContactPage.jsx";
 import UserProfile from "../pages/UserProfile.jsx";
@@ -22,9 +24,8 @@ import VerifyAccountRegistration from "../auth/VerifyAccountRegistration.jsx";
 import ForgotPassword from "../auth/ForgotPassword.jsx";
 import VerifyAccountResetPassword from "../auth/VerifyAccountResetPassword.jsx";
 import ResetPassword from "../auth/ResetPassword.jsx";
-import { Loader2 } from "lucide-react";
-import ProfileLayout from "@/layouts/ProfileLayout.jsx";
-import ProfileDashboard from "@/pages/ProfileDashboard.jsx";
+import ProfileLayout from "../layouts/ProfileLayout.jsx";
+import ProfileDashboard from "../pages/ProfileDashboard.jsx";
 
 
 const AppRouter = () => {
@@ -124,6 +125,7 @@ const AppRouter = () => {
                 <Route element={<PublicRoute currentUser={currentUser} />}>
                     <Route element={<MainLayout currentUser={currentUser} />}>
                         <Route path="/" element={<HomePage currentUser={currentUser} />} />
+                        <Route path="/products" element={<ProductPage currentUser={currentUser} />} />
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/contact" element={<ContactPage />} />
 

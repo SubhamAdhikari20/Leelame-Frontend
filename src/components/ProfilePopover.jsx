@@ -28,7 +28,7 @@ const ProfilePopover = ({
     if (!currentUser) return null;
 
     return (
-        <div className="absolute right-0 mt-3 w-70 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-50">
+        <div className="absolute right-0 mt-3 w-70 bg-white rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 overflow-hidden z-20">
             {/* Profile Header */}
             <div className="px-4 py-3 text-center">
                 <Avatar className="mx-auto h-12 w-12 border-1 border-gray-900">
@@ -124,7 +124,7 @@ const ProfilePopover = ({
                                 Cancel
                             </AlertDialogCancel>
                             <AlertDialogAction
-                                className="bg-red-600 hover:bg-red-700 text-white"
+                                className="bg-green-600 hover:bg-green-700 text-white"
                                 onClick={() => {
                                     handleLogout();
                                     setLogoutDialogOpen(

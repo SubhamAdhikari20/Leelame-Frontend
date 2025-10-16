@@ -94,7 +94,7 @@ const Footer = ({ currentUser }) => {
                     </div>
                 </div>
             </footer>
-            <div className="sticky bottom-0 z-500 inset-x-0 bg-gray-900 text-gray-300 border-t border-gray-700 py-7">
+            <div className="sticky bottom-0 z-20 inset-x-0 bg-gray-900 text-gray-300 border-t border-gray-700 py-7">
                 <p className="text-center text-xs sm:text-sm">
                     &copy; {currentYear} Leelame. All rights reserved.
                 </p>

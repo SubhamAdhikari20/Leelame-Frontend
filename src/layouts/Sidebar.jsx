@@ -121,8 +121,7 @@ const Sidebar = ({ currentUser }) => {
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button
-                            variant="destructive"
-                            className="w-full justify-start gap-3"
+                            className="w-full justify-start gap-3 bg-green-600 hover:bg-green-700"
                         >
                             <LogOut size={18} />
                             Log Out
@@ -146,7 +145,7 @@ const Sidebar = ({ currentUser }) => {
                                 Cancel
                             </AlertDialogCancel>
                             <AlertDialogAction
-                                className="bg-red-600 hover:bg-red-700 text-white"
+                                className="bg-green-600 hover:bg-green-700 text-white"
                                 onClick={() => {
                                     handleLogout();
                                 }}
@@ -176,7 +175,7 @@ const Sidebar = ({ currentUser }) => {
                             <Menu className="h-5 w-5" />
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="left" className="p-0 w-64 z-600">
+                    <SheetContent side="left" className="p-0 w-64">
                         <SidebarContent />
                     </SheetContent>
                 </Sheet>
