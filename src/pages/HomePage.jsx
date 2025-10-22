@@ -104,7 +104,7 @@ const HomePage = ({ currentUser }) => {
     return (
         <>
             {/* Hero Section */}
-            <section className="relative overflow-hidden px-4 md:px-0 min-h-screen flex items-center">
+            <section className="relative overflow-hidden px-4 md:px-0 min-h-screen flex items-center border-b dark:border-gray-700">
                 {/* Background Image */}
                 <div className="absolute inset-0 z-10 hover:animate-out overflow-hidden">
                     <img
@@ -114,20 +114,20 @@ const HomePage = ({ currentUser }) => {
                     />
 
                     {/* Overlay gradients */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-purple-900/40 dark:from-blue-900/60 dark:to-gray-900/60 mix-blend-multiply"></div>
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80 dark:to-background/80"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-900/40 to-purple-900/40 dark:from-blue-900/40 dark:to-gray-900/50 mix-blend-multiply dark:mix-blend-normal"></div>
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80 dark:to-background/50"></div>
                 </div>
 
                 <div className="container mx-auto flex flex-col items-center justify-center text-center gap-6 relative z-10">
-                    <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800">
+                    <h1 className="text-4xl md:text-6xl font-extrabold text-gray-800 dark:text-gray-200">
                         {phrases[phraseIndex]}
                     </h1>
                     {currentUser ? (
                         <>
-                            <p className="max-w-xl text-gray-700 text-base sm:text-lg md:text-xl">
+                            <p className="max-w-xl text-gray-700 dark:text-gray-400 text-base sm:text-lg md:text-xl">
                                 Your Premium Auction Platform. Whether you want to bid on antiques, electronics, or unique collectibles, we’ve got you covered.
                             </p>
-                            <p className="max-w-xl text-gray-800 text-base sm:text-lg md:text-xl">
+                            <p className="max-w-xl text-gray-800 dark:text-gray-200 text-base sm:text-lg md:text-xl">
                                 Enjoy real-time bid tracking, seamless payments, and 24/7 support—your bid, your way.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-4">
@@ -143,10 +143,10 @@ const HomePage = ({ currentUser }) => {
                         </>
                     ) : (
                         <>
-                            <p className="max-w-xl text-gray-700 text-base sm:text-lg md:text-xl">
+                            <p className="max-w-xl text-gray-800 dark:text-gray-300 text-base sm:text-lg md:text-xl">
                                 Discover the thrill of online auctions. Bid on unique items quickly and securely with:
                             </p>
-                            <ul className="list-disc list-inside text-gray-700 space-y-2 max-w-md text-sm sm:text-base">
+                            <ul className="list-disc list-inside text-gray-700 dark:text-gray-400 space-y-2 max-w-md text-sm sm:text-base">
                                 <li>Real-time bid tracking</li>
                                 <li>Seamless payments</li>
                                 <li>Flexible auction durations</li>
@@ -163,12 +163,12 @@ const HomePage = ({ currentUser }) => {
             </section>
 
             {/* Features Section */}
-            <section className="py-12 bg-white">
+            <section className="py-12 bg-background">
                 <div className="container mx-auto px-4">
                     <h2 className="text-3xl font-bold text-center mb-8">Why Choose Leelame?</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         {features.map((f, i) => (
-                            <Card key={i} className="p-0 gap-2 transition-shadow hover:shadow-lg duration-200 overflow-hidden">
+                            <Card key={i} className="p-0 gap-2 dark:hover:shadow-[0_10px_15px_2px_rgba(255,255,255,0.1),0_2px_8px_3px_rgba(255,255,255,0.1)] transition-shadow hover:shadow-lg duration-200 overflow-hidden">
                                 <CardHeader className="p-0">
                                     <div className="relative h-60 w-full overflow-hidden">
                                         <img
@@ -181,7 +181,7 @@ const HomePage = ({ currentUser }) => {
                                         {f.title}
                                     </CardTitle>
                                 </CardHeader>
-                                <CardContent className="text-gray-600 text-sm px-4 py-2 mb-2">
+                                <CardContent className="text-gray-600 dark:text-gray-400 text-sm px-4 py-2 mb-2">
                                     {f.description}
                                 </CardContent>
                             </Card>
@@ -191,7 +191,7 @@ const HomePage = ({ currentUser }) => {
             </section>
 
             {/* Testimonials */}
-            <section className="py-12 bg-background dark:bg-background-dark">
+            <section className="py-12 bg-background">
                 <div className="container mx-auto px-4 text-center">
                     <h2 className="text-3xl font-bold mb-8">Testimonials</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -205,7 +205,7 @@ const HomePage = ({ currentUser }) => {
                                         </p>
                                     </div>
                                     <div className="flex items-center mt-6">
-                                        <Avatar className="border-1 border-black w-15 h-15">
+                                        <Avatar className="border-1 border-gray-900 dark:border-gray-100 w-15 h-15">
                                             <AvatarImage src={t.avatar} alt={t.name} />
                                             <AvatarFallback>{t.name.split(" ").map(n => n[0]).join("")}</AvatarFallback>
                                         </Avatar>
@@ -248,7 +248,7 @@ const HomePage = ({ currentUser }) => {
             </section>
 
             {/* Demo / Video Section */}
-            <section className="py-12 bg-gray-50">
+            <section className="py-12 bg-background">
                 <div className="container mx-auto px-4 flex flex-col items-center">
                     <h2 className="text-3xl font-bold text-center mb-8">Experience Leelame in Action</h2>
                     <div className="w-full max-w-3xl aspect-video rounded overflow-hidden shadow-lg">
@@ -259,7 +259,7 @@ const HomePage = ({ currentUser }) => {
                             title="Leelame Demo Video"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             allowFullScreen
-                        ></iframe>
+                        />
                     </div>
                 </div>
             </section>

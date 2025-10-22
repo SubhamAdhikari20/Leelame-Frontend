@@ -39,23 +39,26 @@ const AppRouter = () => {
             try {
                 const response = await fetchCurrentUser();
                 // console.log("User data:", response.data.user);
-                dispatch(updateUserDetails(response.data));
+                if (response.data.success) {
+                    dispatch(updateUserDetails(response.data));
+                }
             }
             catch (error) {
-                console.error("Failed to fetch user:", error);
+                // console.error("Failed to fetch user:", error);
                 // dispatch(logout());
+                return;
             }
             finally {
                 setLoading(false);
             }
         };
         getCurrentUser();
-    }, []);
+    }, [dispatch]);
 
     if (loading) {
         return (
-            <section className="flex items-center justify-center h-screen">
-                <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
+            <section className="flex items-center justify-center h-screen bg-background dark:bg-background">
+                <Loader2 className="animate-spin w-10 h-10 text-gray-600 dark:text-gray-400" />
             </section>
         );
     }
@@ -100,29 +103,31 @@ const AppRouter = () => {
 
 
                 {/* Protected Routes for 'buyers' */}
-                <Route element={<ProtectedRoute currentUser={currentUser} role={["buyer"]} />}>
+                <Route element={<ProtectedRoute currentUser={currentUser} role="buyer" />}>
                     <Route element={<MainLayout currentUser={currentUser} />}>
                         {currentUser &&
-                            <Route path="/" element={<Navigate to={`/${currentUser.username}`} replace />} />
+                            <>
+                                <Route path="/" element={<Navigate to={`/${currentUser?.username}`} replace />} />
+                                <Route path="/:username" element={<HomePage currentUser={currentUser} />} />
+                                {/* <Route path="/:username/my-bids" element={<MyBidPage currentUser={currentUser} />} /> */}
+                            </>
                         }
-                        <Route path="/:username" element={<HomePage currentUser={currentUser} />} />
-
-                        <Route element={<ProfileLayout currentUser={currentUser} />}>
-                            <Route path="/:username/my-profile/dashboard" element={<ProfileDashboard currentUser={currentUser} />} />
-                            <Route path="/:username/my-profile/settings" element={<UserProfile currentUser={currentUser} />} />
-                        </Route>
+                    </Route>
+                    <Route element={<ProfileLayout currentUser={currentUser} />}>
+                        <Route path="/:username/my-profile/dashboard" element={<ProfileDashboard currentUser={currentUser} />} />
+                        <Route path="/:username/my-profile/settings" element={<UserProfile currentUser={currentUser} />} />
                     </Route>
                 </Route>
 
                 {/* Protected Routes for 'sellers' */}
-                <Route element={<ProtectedRoute currentUser={currentUser} role={["seller"]} />}>
+                <Route element={<ProtectedRoute currentUser={currentUser} role="seller" />}>
                     <Route element={<MainLayout currentUser={currentUser} />}>
-                        <Route path="/:username" element={<HomePage currentUser={currentUser} />} />
+
                     </Route>
                 </Route>
 
                 { /* Public Routes */}
-                <Route element={<PublicRoute currentUser={currentUser} />}>
+                <Route element={<PublicRoute />}>
                     <Route element={<MainLayout currentUser={currentUser} />}>
                         <Route path="/" element={<HomePage currentUser={currentUser} />} />
                         <Route path="/products" element={<ProductPage currentUser={currentUser} />} />
@@ -136,7 +141,7 @@ const AppRouter = () => {
                         <Route path="/verify-account-reset-password/:email" element={<VerifyAccountResetPassword />} />
                         <Route path="/reset-password/:email" element={<ResetPassword />} />
 
-                        <Route path="/user/:username" element={<ViewUserProfile currentUser={currentUser} />} />
+                        <Route path="/:username" element={<ViewUserProfile />} />
                     </Route>
                 </Route>
 

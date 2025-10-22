@@ -1,4 +1,4 @@
-// frontend/src/layouts/Navbar.jsx
+// frontend/src/components/Navbar.jsx
 import React, { useRef, useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar.jsx";
@@ -17,11 +17,14 @@ import { Button } from "./ui/button.jsx";
 import {
     FaBars,
     FaFilter,
+    FaMoon,
     FaSearch,
     FaSignOutAlt,
+    FaSun,
     FaTimes,
     FaUser,
 } from "react-icons/fa";
+import { SunIcon, MoonStar } from "lucide-react";
 import PortalWrapper from "../layouts/PortalWrapper.jsx";
 import {
     NotificationFeedPopover,
@@ -31,6 +34,8 @@ import { useDispatch } from "react-redux";
 import { logout, updateUserDetails } from "../redux/reducers/userSlice.js";
 import Searchbar from "./Searchbar.jsx";
 import ProfilePopover from "./ProfilePopover.jsx";
+import { useTheme } from "../context/ThemeProvider.jsx";
+import { toast } from "sonner";
 
 
 const Navbar = ({ currentUser }) => {
@@ -45,15 +50,16 @@ const Navbar = ({ currentUser }) => {
     const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
     const [feedOpen, setFeedOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    // const [isFocused, setIsFocused] = useState(false);
+    const inputRef = useRef(null);
+    const { theme, toggleTheme } = useTheme();
 
-    const navLinks = [
-        { name: "Home", path: "/" },
-        { name: "Products", path: "/products" },
-        { name: "My Bids", path: "/my-bids", authRequired: true },
-        { name: "Blog", path: "/blog" },
-        { name: "About", path: "/about" },
-        { name: "Contact", path: "/contact" },
-    ];
+    const resolvedTheme =
+        theme === "system"
+            ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
+            : theme;
 
     // Close desktop profile popover on outside click
     useEffect(() => {
@@ -70,10 +76,14 @@ const Navbar = ({ currentUser }) => {
         return () => document.removeEventListener("mousedown", onClickOutside);
     }, [logoutDialogOpen]);
 
-    // Search state
-    const [searchQuery, setSearchQuery] = useState("");
-    // const [isFocused, setIsFocused] = useState(false);
-    const inputRef = useRef(null);
+    const navLinks = [
+        { name: "Home", path: "/" },
+        { name: "Products", path: "/products" },
+        { name: "My Bids", path: `/${currentUser?.username}/my-bids`, authRequired: true },
+        { name: "Blog", path: "/blog" },
+        { name: "About", path: "/about" },
+        { name: "Contact", path: "/contact" },
+    ];
 
     // Search handlers
     const handleSubmit = (e) => {
@@ -105,12 +115,13 @@ const Navbar = ({ currentUser }) => {
 
     const handleLogout = () => {
         dispatch(logout());
-        navigate("/login");
+        navigate("/login", { replace: true });
         toggleMenu();
+        toast.success("Logout Successful");
     };
 
     return (
-        <header className="sticky top-0 inset-x-0 z-20 bg-white shadow-md transition-all">
+        <header className="sticky top-0 inset-x-0 z-20 bg-white dark:bg-background shadow-lg dark:shadow-[0_4px_6px_1px_rgba(255,255,255,0.05),0_2px_4px_2px_rgba(255,255,255,0.05)] transition-all border-b border-gray-300 dark:border-gray-700">
             <nav className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-3 md:gap-5">
                 {/* Branding */}
                 <div className="flex items-center gap-15">
@@ -122,15 +133,18 @@ const Navbar = ({ currentUser }) => {
                             height={50}
                             className="rounded-full"
                         />
-                        <span className="text-xl sm:text-2xl font-bold text-gray-800">
+                        <span className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-gray-100">
                             Leelame
                         </span>
                     </Link>
 
                     {/* Desktop Navigation - Navbar Left*/}
-                    <ul className="hidden lg:flex items-center gap-8 text-gray-700">
+                    <ul className="hidden lg:flex items-center gap-8 text-gray-500 dark:text-gray-300">
                         {navLinks.map((link) => {
-                            if (link.authRequired && !currentUser) return null;
+                            if (link.authRequired && !currentUser) {
+                                return null;
+                            }
+
                             const actualPath =
                                 link.path === "/"
                                     ? currentUser
@@ -156,8 +170,8 @@ const Navbar = ({ currentUser }) => {
                                     <Link
                                         to={actualPath}
                                         className={`text-sm transition-colors ${isActive
-                                            ? "text-green-600 font-semibold border-b-2 border-green-600 pb-1"
-                                            : "hover:text-gray-900"
+                                            ? "text-green-600 dark:text-green-400 font-semibold border-b-2 border-green-600 dark:border-green-600 pb-1"
+                                            : "hover:text-foreground dark:hover:text-foreground"
                                             }`}
                                     >
                                         {link.name}
@@ -168,41 +182,36 @@ const Navbar = ({ currentUser }) => {
                     </ul>
                 </div>
 
-                <div className="hidden lg:hidden xl:flex md:flex gap-2 items-center flex-1 mx-2 transition-all">
-                    {/* Searchbar*/}
-                    <Searchbar
-                        inputRef={inputRef}
-                        searchQuery={searchQuery}
-                        setSearchQuery={setSearchQuery}
-                        clearQuery={clearQuery}
-                        onSubmit={handleSubmit}
-                        placeholder="Search"
-                        className="flex-1 max-w-5xl"
-                        showButton={true}
-                    />
-
-                    {/* Filter button */}
-                    <Button
-                        type="button"
-                        onClick={() => setFilterOpen(true)}
-                        aria-label="Open filters"
-                        className="inline-flex items-center gap-1 rounded-sm border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 transition-colors p-2"
-                    >
-                        <FaFilter className="w-4 h-4" />
-                    </Button>
-
-                </div>
-
                 {/* Medium and Small Screens: Search Icon Button */}
-                <div className="flex md:hidden lg:flex xl:hidden items-center flex-1 justify-end">
+                <div className="flex items-center flex-1 justify-end">
                     <button
                         onClick={() => setSearchOpen(v => !v)}
                         aria-label="Open search"
-                        className="p-2 rounded-full hover:bg-gray-100 transition"
+                        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition cursor-pointer"
                     >
-                        <FaSearch className="text-gray-700 w-5 h-5" />
+                        <FaSearch className="text-gray-700 dark:text-gray-100 w-5 h-5" />
                     </button>
                 </div>
+
+                {/* Light/Dark Mode Button*/}
+                <Button
+                    type="button"
+                    onClick={toggleTheme}
+                    aria-label="Toggle theme"
+                    className="inline-flex items-center gap-1 rounded-sm border text-gray-800 border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 hover:dark:bg-gray-700 focus:ring-1 focus:ring-gray-300 transition-colors p-2"
+                >
+                    {resolvedTheme === "dark" ? (
+                        <SunIcon className="dark:text-gray-200 w-5 h-5" />
+                    ) : (
+                        <FaMoon className="dark:text-gray-200 w-5 h-5" />
+                    )}
+                </Button>
+
+                <Link to="/seller">
+                    <h1 className="text-sm font-semibold text-green-500 dark:text-green-400 hover:text-green-600 hover:dark:text-green-300 hover:underline transition-all duration-200">
+                        Become a seller
+                    </h1>
+                </Link>
 
                 {currentUser ? (
                     <>
@@ -216,7 +225,6 @@ const Navbar = ({ currentUser }) => {
                                     buttonRef={notifButtonRef}
                                     isVisible={feedOpen}
                                     onClose={() => setFeedOpen(false)}
-
                                 />
                             </PortalWrapper>
                         )}
@@ -228,7 +236,7 @@ const Navbar = ({ currentUser }) => {
                     {currentUser ? (
                         <div className="relative" ref={menuRef}>
                             <Avatar
-                                className="h-10 w-10 cursor-pointer border-1 border-gray-900"
+                                className="h-10 w-10 cursor-pointer border-1 border-gray-900 dark:border-gray-100"
                                 onClick={() => setDesktopMenuOpen((v) => !v)}
                             >
                                 {currentUser?.profilePictureUrl ? (
@@ -289,10 +297,10 @@ const Navbar = ({ currentUser }) => {
                 </div>
 
                 {/* Mobile Menu Toggle */}
-                <div className="lg:hidden">
+                <div className="lg:hidden flex items-center">
                     <button
                         onClick={toggleMenu}
-                        className="text-gray-800 focus:outline-none cursor-pointer"
+                        className="text-gray-800 dark:text-gray-100 focus:outline-none cursor-pointer"
                         aria-label="Toggle menu"
                     >
                         {mobileMenuOpen ? (
@@ -305,7 +313,7 @@ const Navbar = ({ currentUser }) => {
             </nav>
 
             {/* Small or Medium Size Screen Searchbar Overlay */}
-            <nav className={`md:hidden lg:flex xl:hidden flex items-center bg-white shadow-md overflow-hidden transition-all duration-300 ${searchOpen
+            <nav className={`flex items-center bg-white dark:bg-background shadow-md overflow-hidden transition-all duration-300 ${searchOpen
                 ? "max-h-50 opacity-100"
                 : "max-h-0 opacity-0"
                 }`}>
@@ -313,9 +321,8 @@ const Navbar = ({ currentUser }) => {
                     {/* Filter Button */}
                     <Button
                         type="button"
-                        onClick={() => setFilterOpen(true)}
                         aria-label="Open filters"
-                        className="inline-flex items-center gap-1 rounded-sm border border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-2 focus:ring-gray-300 transition-colors p-2"
+                        className="inline-flex items-center gap-1 rounded-sm border border-gray-300 dark:border-gray-700 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-2 focus:ring-gray-300 transition-colors p-2"
                     >
                         <FaFilter className="w-4 h-4" />
                     </Button>
@@ -337,13 +344,13 @@ const Navbar = ({ currentUser }) => {
 
             {/* Mobile Navigation Menu */}
             <nav
-                className={`lg:hidden bg-white shadow-md overflow-hidden transition-all duration-300 ${mobileMenuOpen
-                    ? "max-h-96 opacity-100"
+                className={`lg:hidden bg-white dark:bg-background shadow-md overflow-hidden transition-all duration-300 ${mobileMenuOpen
+                    ? "max-h-100 opacity-100"
                     : "max-h-0 opacity-0"
                     }`}
             >
                 <div className="container mx-auto px-4 py-4 flex justify-center items-center flex-col gap-4">
-                    <ul className="flex flex-col gap-4 text-gray-700">
+                    <ul className="flex flex-col gap-4 text-gray-700 dark:text-white">
                         {navLinks.map((link) => {
                             if (link.authRequired && !currentUser) return null;
 
@@ -373,8 +380,8 @@ const Navbar = ({ currentUser }) => {
                                         to={actualPath}
                                         onClick={() => setMobileMenuOpen(false)}
                                         className={`text-base transition-colors ${isActive
-                                            ? "text-green-600 font-semibold border-b-2 border-green-600 pb-1"
-                                            : "hover:text-gray-900"
+                                            ? "text-green-600 dark:text-green-400 font-semibold border-b-2 border-green-600 dark:border-green-600 pb-1"
+                                            : "hover:text-gray-900 dark:hover:text-green-400"
                                             }`}
                                     >
                                         {link.name}
@@ -391,7 +398,7 @@ const Navbar = ({ currentUser }) => {
                                 onClick={toggleMenu}
                                 className="flex items-center gap-2"
                             >
-                                <Avatar className="h-8 w-8 cursor-pointer border-1 border-gray-900">
+                                <Avatar className="h-8 w-8 cursor-pointer border-1 border-gray-900 dark:border-gray-100">
                                     {currentUser?.profilePictureUrl ? (
                                         <AvatarImage
                                             src={currentUser?.profilePictureUrl}

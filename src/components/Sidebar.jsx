@@ -1,6 +1,6 @@
-// forntend/src/layouts/Sidebar.jsx
+// frontend/src/components/Sidebar.jsx
 import React, { useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, replace } from "react-router-dom";
 import {
     LayoutDashboard,
     Trophy,
@@ -13,14 +13,14 @@ import {
     Sheet,
     SheetContent,
     SheetTrigger,
-} from "../components/ui/sheet.jsx";
-import { Button } from "../components/ui/button.jsx";
+} from "./ui/sheet.jsx";
+import { Button } from "./ui/button.jsx";
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
-} from "../components/ui/avatar.jsx";
-import { ScrollArea } from "../components/ui/scroll-area.jsx";
+} from "./ui/avatar.jsx";
+import { ScrollArea } from "./ui/scroll-area.jsx";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -31,17 +31,16 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "../components/ui/alert-dialog.jsx";
+} from "./ui/alert-dialog.jsx";
 import { logout } from "../redux/reducers/userSlice.js";
 import { useDispatch } from "react-redux";
+import { toast } from "sonner";
 
 
 const Sidebar = ({ currentUser }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-
-    if (!currentUser) return null;
 
     const menuItems = [
         { name: "Dashboard", icon: <LayoutDashboard size={18} />, path: "dashboard" },
@@ -52,14 +51,15 @@ const Sidebar = ({ currentUser }) => {
 
     const handleLogout = () => {
         dispatch(logout());
-        navigate("/login");
+        navigate("/login", { replace: true });
+        toast.success("Logout Successful");
     };
 
     const SidebarContent = () => (
         <div className="flex flex-col p-5">
             {/* Profile Section */}
-            <div className="flex flex-col items-center py-5 border-b">
-                <Avatar className="w-16 h-16 border-1 border-gray-900">
+            <div className="flex flex-col items-center py-5 border-b dark:border-gray-700">
+                <Avatar className="w-16 h-16 border border-gray-900 dark:border-gray-100">
                     {currentUser?.profilePictureUrl ? (
                         <AvatarImage
                             src={currentUser?.profilePictureUrl}
@@ -79,13 +79,13 @@ const Sidebar = ({ currentUser }) => {
                         </AvatarFallback>
                     )}
                 </Avatar>
-                <h1 className="mt-2 font-bold text-gray-900">
+                <h1 className="mt-2 font-bold text-gray-900 dark:text-gray-100">
                     {currentUser?.fullName}
                 </h1>
-                <h2 className="font-semibold text-gray-800">
+                <h2 className="font-semibold text-gray-800 dark:text-gray-200">
                     {currentUser?.username}
                 </h2>
-                <p className="text-sm text-gray-500 truncate">
+                <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
                     {currentUser?.email}
                 </p>
             </div>
@@ -103,8 +103,8 @@ const Sidebar = ({ currentUser }) => {
                                 <Button
                                     variant={isActive ? "secondary" : "ghost"}
                                     className={`w-full justify-start gap-3 rounded-lg text-gray-700 transition ${isActive
-                                        ? "bg-green-50 text-green-700 font-semibold"
-                                        : "hover:bg-green-50 hover:text-green-600"
+                                        ? "bg-green-100 dark:bg-gray-100 text-green-700 font-semibold"
+                                        : "dark:text-gray-300 hover:bg-green-50 dark:hover:bg-gray-700 hover:text-green-600 dark:hover:text-green-500"
                                         }`}
                                 >
                                     {item.icon}
@@ -116,12 +116,18 @@ const Sidebar = ({ currentUser }) => {
                 </nav>
             </ScrollArea>
 
-            {/* Logout */}
             <div className="py-4 border-t mt-4">
+                <Link to="/seller">
+                    <h1 className="font-semibold text-green-500 hover:text-green-600 hover:dark:text-green-400 hover:underline transition-all duration-200 mb-3">
+                        Become a seller
+                    </h1>
+                </Link>
+
+                {/* Logout */}
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <Button
-                            className="w-full justify-start gap-3 bg-green-600 hover:bg-green-700"
+                            className="w-full justify-start gap-3 dark:text-white bg-green-600 dark:bg-green-600 hover:bg-green-700 dark:hover:bg-green-500"
                         >
                             <LogOut size={18} />
                             Log Out
@@ -160,14 +166,14 @@ const Sidebar = ({ currentUser }) => {
     );
 
     return (
-        <aside className="">
+        <div>
             {/* 🖥 Desktop Sidebar */}
-            <div className="hidden md:block w-full sticky top-30 inset-x-0 bg-white shadow-lg rounded-2xl">
+            <div className="hidden md:block w-full sticky top-30 inset-x-0 bg-white dark:bg-gray-900 shadow-lg rounded-2xl border">
                 <SidebarContent />
             </div>
 
             {/* 📱 Mobile Sidebar (Sheet Drawer) */}
-            <div className="md:hidden p-3 flex items-center justify-between w-full bg-white border-b">
+            <div className="md:hidden p-3 flex items-center justify-between w-full bg-white dark:bg-gray-900 border-b">
                 <h1 className="text-lg font-semibold">Menu</h1>
                 <Sheet>
                     <SheetTrigger asChild>
@@ -180,7 +186,7 @@ const Sidebar = ({ currentUser }) => {
                     </SheetContent>
                 </Sheet>
             </div>
-        </aside>
+        </div>
     );
 };
 

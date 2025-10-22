@@ -30,7 +30,7 @@ const Searchbar = forwardRef(
                 <div className="relative flex-1 transition-shadow">
                     {/* Left icon inside Input */}
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <FaSearch className="w-4 h-4 text-gray-400" />
+                        <FaSearch className="w-4 h-4 text-gray-400 dark:text-gray-200" />
                     </div>
 
                     {/* Input Field*/}
@@ -43,7 +43,7 @@ const Searchbar = forwardRef(
                         name="search"
                         placeholder={placeholder}
                         className={
-                            "w-full rounded-bl-full rounded-tl-full text-gray-900 font-medium placeholder-gray-300 py-3 pl-10 pr-11 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:bg-white transition-colors"
+                            "w-full dark:bg-background border border-gray-300 dark:border-gray-500 rounded-bl-full rounded-tl-full text-gray-900 dark:text-gray-100 font-medium placeholder-gray-300 py-3 pl-10 pr-11 text-sm focus:outline-none focus:ring-1 focus:ring-gray-500 dark:focus:ring-gray-300 focus:bg-white dark:focus:bg-gray-900 transition-colors"
                         }
                         aria-label="Search"
                     />
@@ -66,9 +66,9 @@ const Searchbar = forwardRef(
                     <Button
                         type="submit"
                         aria-label="Search"
-                        className="inline-flex items-center justify-center rounded-br-full rounded-tr-full border border-gray-300 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
+                        className="inline-flex items-center justify-center rounded-br-full rounded-tr-full border border-gray-300 dark:border-gray-500 bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 dark:focus:ring-gray-200 transition-colors"
                     >
-                        <FaSearch className="w-5 h-5 text-gray-500" />
+                        <FaSearch className="w-5 h-5 text-gray-500 dark:text-gray-300" />
                     </Button>)}
             </form>
         );

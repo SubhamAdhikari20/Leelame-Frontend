@@ -33,19 +33,14 @@ import { loginUser, loginUserWithGoogle, sendVerificationEmailForRegistration } 
 import { loginSuccess, logout } from "../redux/reducers/userSlice.js";
 
 
-const Login = () => {
+const Login = ({ currentUser }) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        dispatch(logout());
-    }, [dispatch]);
-
     // OTP dialog state
     const [dialogOpen, setDialogOpen] = useState(false);
     const [emailToVerify, setEmailToVerify] = useState("");
     const [iSendingCode, setIsSendingCode] = useState(false);
+    const dispatch = useDispatch();
 
     const form = useForm({
         resolver: zodResolver(loginSchema),
@@ -66,18 +61,16 @@ const Login = () => {
             const response = await loginUser(data);
             const user = response.data.user;
 
-            if (user.isVerified) {
+            if (user.isVerified && response.data.success) {
                 toast.success("Login Successful", {
                     description: response.data.message,
                 });
                 dispatch(loginSuccess(response.data));
-                navigate("/");
-                return;
+                navigate("/", { replace: true });
             }
             else {
-                toast.warning("Account Not Verified", {
-                    description:
-                        "Please verify your email to access your account.",
+                toast.warning("Account is not verified", {
+                    description: `${response.data.message} Do you want to verify your account?`,
                     action: {
                         label: "Yes",
                         onClick: () => {
@@ -86,12 +79,12 @@ const Login = () => {
                         },
                     },
                 });
-                return;
             }
         }
         catch (error) {
-            toast.error("Login failed", {
-                description: error.response.data.message,
+            console.error("Error in user login: ", error);
+            toast.error("Error in user login", {
+                description: error.response?.data.message
             });
         }
         finally {
@@ -102,15 +95,21 @@ const Login = () => {
     const loginWithGoogle = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
-                const { data } = await loginUserWithGoogle(tokenResponse.access_token);
-                toast.success("Logged in successfully");
+                const response = await loginUserWithGoogle(tokenResponse.access_token);
 
-                dispatch(loginSuccess(data));
-                navigate("/dashboard");
+                if (response.data.success) {
+                    toast.success("Google Login Successful", {
+                        description: response.data.message,
+                    });
+                    dispatch(loginSuccess(response.data));
+                    navigate("/");
+                }
             }
             catch (error) {
-                console.error("Google Login Error:", error);
-                toast.error("Google login failed");
+                console.error("Error in google login: ", error);
+                toast.error("Error in google login", {
+                    description: error.response?.data.message
+                });
             }
         },
         onError: () => {
@@ -124,11 +123,19 @@ const Login = () => {
             const response = await sendVerificationEmailForRegistration(
                 emailToVerify
             );
-            toast.success(response.data.message);
-            navigate(`/verify-account-registration/${response.data.user.username}`);
+
+            if (response.data.success) {
+                toast.success("Success", {
+                    description: response.data.message
+                });
+                navigate(`/verify-account-registration/${response.data.user.username}`);
+            }
         }
         catch (error) {
-            toast.error(error.response?.data.message || "Failed to send code");
+            console.error("Error sending account verification email: ", error);
+            toast.error("Error sending account verification email", {
+                description: error.response?.data.message
+            });
         }
         finally {
             setIsSendingCode(false);
@@ -136,11 +143,11 @@ const Login = () => {
     };
 
     return (
-        <section className="min-h-screen flex items-center justify-center bg-gray-100 px-5 py-10 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md bg-white rounded-lg shadow-lg">
+        <section className="flex items-center justify-center px-5 py-10 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md bg-white dark:bg-gray-900 border rounded-lg shadow-lg">
                 <Button
                     variant="ghost"
-                    className="relative top-2 left-2 text-gray-600 hover:text-blue-950"
+                    className="relative top-2 left-2 text-gray-600 dark:text-gray-400 hover:text-blue-950 dark:hover:text-gray-200 dark:hover:bg-gray-700"
                     onClick={() => navigate("/")}
                     aria-label="Back to home"
                 >
@@ -149,10 +156,10 @@ const Login = () => {
 
                 <div className="space-y-8 px-8 pb-8">
                     <div className="text-center">
-                        <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-900">
+                        <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-gray-900 dark:text-gray-100">
                             Leelame
                         </h1>
-                        <p className="mt-2 text-sm sm:text-base text-gray-600">
+                        <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                             Login to start your bidding adventure
                         </p>
                     </div>
@@ -203,7 +210,7 @@ const Login = () => {
                                                     onClick={
                                                         togglePasswordVisibility
                                                     }
-                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400  focus:outline-hidden focus:text-blue-600 dark:text-neutral-600 dark:focus:text-blue-500"
+                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
                                                 >
                                                     {showPassword ? (
                                                         <FaEye size={18} />
@@ -219,7 +226,7 @@ const Login = () => {
                                 <div className="text-sm text-right">
                                     <Link
                                         to="/forgot-password"
-                                        className="text-blue-600 hover:underline"
+                                        className="text-blue-600 dark:text-blue-500 hover:underline"
                                     >
                                         Forgot Password?
                                     </Link>
@@ -262,7 +269,7 @@ const Login = () => {
                                 Don't have an account?{" "}
                                 <Link
                                     to="/sign-up"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 dark:text-blue-500 hover:underline"
                                 >
                                     Sign up
                                 </Link>

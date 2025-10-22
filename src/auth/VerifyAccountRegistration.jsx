@@ -39,23 +39,26 @@ const VerifyAccountRegistration = () => {
                 code: data.code
             });
 
-            toast.success("Success", {
-                description: response.data.message,
+            if (response.data.success) {
+                toast.success("Success", {
+                    description: response.data.message,
+                });
+                navigate("/login");
+            }
+        }
+        catch (error) {
+            console.error("Error verifying OTP for user registration: ", error);
+            toast.error("Error verifying OTP for user registration", {
+                description: error.response?.data.message,
             });
-
-            navigate("/login");
-        } catch (error) {
-            console.error("Error in verifying user", error);
-            toast.error("Verify user failed", {
-                description: error.response.data.message,
-            });
-        } finally {
+        }
+        finally {
             setIsVerifying(false);
         }
     };
     return (
-        <section className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
+        <section className="flex justify-center items-center">
+            <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-900 border rounded-lg shadow-md">
                 <div className="text-center">
                     <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">
                         Verify Your Account

@@ -1,38 +1,38 @@
 // frontend/src/pages/ViewUserProfile.jsx
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { Loader2, View } from "lucide-react";
+import { useParams } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { fetchPublicProfile } from "../api/Api.js";
 import NotFoundPage from "./NotFoundPage.jsx";
+import { toast } from "sonner";
 
-const ViewUserProfile = ({ currentUser }) => {
+
+const ViewUserProfile = () => {
     const { username } = useParams();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const loadProfile = async () => {
+            setLoading(true);
             try {
-                setLoading(true);
-                setError(null);
                 const response = await fetchPublicProfile(username);
                 setUser(response.data.user);
             }
             catch (error) {
-                if (error?.response?.status === 404) {
-                    setUser(null);
-                }
-                else {
-                    setError("Failed to load profile");
-                }
+                toast.error("Failed to load profile", {
+                    description: error.response?.data.message
+                });
+                setUser(null);
             }
             finally {
                 setLoading(false);
             }
         };
 
-        if (username) loadProfile();
+        if (username) {
+            loadProfile();
+        }
     }, [username]);
 
     if (loading) {
@@ -58,7 +58,7 @@ const ViewUserProfile = ({ currentUser }) => {
                     />
                     <div>
                         <h1 className="text-2xl font-bold">{user.fullName ?? user.username}</h1>
-                        <p className="text-sm text-muted-foreground">@{user.username}</p>
+                        <p className="text-sm text-muted-foreground">{user.username}</p>
                         {user.role && <p className="mt-1 text-xs text-muted-foreground">Role: {user.role}</p>}
                     </div>
                 </div>
@@ -76,17 +76,13 @@ const ViewUserProfile = ({ currentUser }) => {
 
                 <div className="mt-6 flex gap-3">
                     {/** If logged-in user equals this profile, show link to dashboard/profile edit */}
-                    {currentUser?.username === user.username ? (
-                        <Link to={`/${user.username}/my-profile`} className="btn">
-                            My Dashboard
-                        </Link>
-                    ) : (
+                    {user.username ? (
                         <>
                             {/* Follow/message buttons etc. (optional) */}
                             <button className="btn-outline">Follow</button>
                             <button className="btn">Message</button>
                         </>
-                    )}
+                    ) : null}
                 </div>
             </div>
         </main>

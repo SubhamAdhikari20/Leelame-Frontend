@@ -13,6 +13,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar.jsx";
 import { Badge } from "../ui/badge.jsx";
 import { Link } from "react-router-dom";
 import { Heart } from "lucide-react";
+import { toast } from "sonner";
 
 
 const ProductCard = ({ product, onBid, onToggleFavourite }) => {
@@ -60,9 +61,9 @@ const ProductCard = ({ product, onBid, onToggleFavourite }) => {
     };
 
     return (
-        <Card className="pt-0 gap-4 w-full max-w-md mx-auto overflow-hidden hover:shadow-lg transition-shadow duration-200">
+        <Card className="pt-0 gap-4 w-full max-w-md mx-auto overflow-hidden shadow hover:shadow-lg dark:shadow-[0_2px_3px_1px_rgba(255,255,255,0.1),0_2px_2px_-1px_rgba(255,255,255,0.06)] dark:hover:shadow-[0_10px_15px_2px_rgba(255,255,255,0.1),0_2px_8px_3px_rgba(255,255,255,0.1)] transition-shadow duration-200">
             <Link to={`/product/${id}`}>
-                <div className="relative h-55 w-full overflow-hidden">
+                <div className="relative h-55 w-full overflow-hidden border-b dark:border-gray-700">
                     <img
                         src={image}
                         alt={title}

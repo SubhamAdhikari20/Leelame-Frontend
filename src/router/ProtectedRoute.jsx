@@ -14,19 +14,40 @@ const ProtectedRoute = ({ currentUser, role }) => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    if (!currentUser) {
-        dispatch(logout());
-        return <Navigate to="/" replace />;
-    }
-
-    // Check role
-    if (role && !role.includes(currentUser.role)) {
-        dispatch(logout());
-        return <Navigate to="/" replace />;
-    }
-
     // Check if username exists (only when visiting /:username route)
     useEffect(() => {
+        if (!currentUser) {
+            dispatch(logout());
+            navigate("/", { replace: true });
+            return;
+        }
+
+        // Check role
+        const rolesToCheck = Array.isArray(currentUser.role) ? currentUser.role : [currentUser.role];
+        const hasAccess = rolesToCheck.some(r => {
+            if (role === "buyer" && r === "buyer") {
+                return true;
+            }
+
+            if (role === "seller" && r === "seller") {
+                const isVerifiedSeller = currentUser.sellerStatus === "verified";
+                const isTemporarilyBanned = currentUser.sellerBannedDateTo && new Date(currentUser.sellerBannedDateTo) > new Date();
+                const isPermanentlyBanned = currentUser.isSellerPermanentlyBanned;
+                return isVerifiedSeller && !isTemporarilyBanned && !isPermanentlyBanned;
+            }
+
+            if (role === "admin" && r === "admin") {
+                return true;
+            }
+            return false;
+        });
+
+        if (!hasAccess) {
+            dispatch(logout());
+            navigate("/", { replace: true });
+            return;
+        }
+
         const checkUser = async () => {
             if (!username) {
                 setIsValidUser(true); // homepage without username is always valid
@@ -42,7 +63,7 @@ const ProtectedRoute = ({ currentUser, role }) => {
                 }
                 else if (exists && currentUser && username !== currentUser.username) {
                     setIsValidUser(false);
-                    navigate(`/profile/${username}`, { replace: true });
+                    navigate(`/${username}`, { replace: true });
                 }
                 else {
                     setIsValidUser(false);
@@ -53,12 +74,13 @@ const ProtectedRoute = ({ currentUser, role }) => {
             }
         };
         checkUser();
-    }, [username, currentUser]);
+    }, [username, currentUser, role, navigate, dispatch]);
+
 
     if (isValidUser === null) {
         return (
-            <section className="flex items-center justify-center h-screen">
-                <Loader2 className="animate-spin w-10 h-10 text-gray-600" />
+            <section className="flex items-center justify-center h-screen bg-background dark:bg-background">
+                <Loader2 className="animate-spin w-10 h-10 text-gray-600 dark:text-gray-400" />
             </section>
         );
     }

@@ -25,13 +25,8 @@ const ResetPassword = () => {
     const navigate = useNavigate();
     const params = useParams();
     const [isSubmitting, setIsSubmitting] = useState(false);
-
     const [showPassword, setShowPassword] = useState(false);
-    const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
-
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const toggleConfirmPasswordVisibility = () =>
-        setShowConfirmPassword((prev) => !prev);
 
     const form = useForm({
         resolver: zodResolver(resetPasswordSchema),
@@ -63,6 +58,9 @@ const ResetPassword = () => {
             setIsSubmitting(false);
         }
     };
+
+    const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+    const toggleConfirmPasswordVisibility = () => setShowConfirmPassword((prev) => !prev);
 
     return (
         <section className="flex justify-center items-center min-h-screen bg-gray-100 px-4">

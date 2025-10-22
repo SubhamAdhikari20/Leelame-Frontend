@@ -26,11 +26,11 @@ export const userSlice = createSlice({
                 state.currentUser = { ...state.currentUser, ...action.payload.user };
             }
         },
-        updateUserDetails: (state, action) => {
-            if (state.currentUser) {
-                state.currentUser = action.payload.user;
-            }
-        },
+        // updateUserDetails: (state, action) => {
+        //     if (state.currentUser) {
+        //         state.currentUser = action.payload.user;
+        //     }
+        // },
         updateProfilePictureSuccess: (state, action) => {
             if (state.currentUser) {
                 state.currentUser.profilePictureUrl = action.payload.user.profilePictureUrl;
@@ -43,6 +43,6 @@ export const userSlice = createSlice({
     },
 });
 
-export const { registerSuccess, loginSuccess, logout, deleteUserSuccess, updateProfilePictureSuccess, updateUserDetails} = userSlice.actions;
+export const { registerSuccess, loginSuccess, logout, deleteUserSuccess, updateProfilePictureSuccess, updateUserDetails } = userSlice.actions;
 
 export default userSlice.reducer;

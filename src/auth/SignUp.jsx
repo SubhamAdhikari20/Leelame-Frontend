@@ -2,16 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { Link, useNavigate } from "react-router-dom";
 import { useDebounceValue, useDebounceCallback } from "usehooks-ts";
 import { toast } from "sonner";
 import { signUpSchema } from "../schemas/auth/signUpSchema.js";
-import { AxiosError } from "axios";
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
@@ -24,22 +21,52 @@ import { Button } from "../components/ui/button.jsx";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import { loginUserWithGoogle, registerUser, validateUsernameUnique } from "@/api/Api.js";
+import { loginUserWithGoogle, registerUser, validateUsernameUnique } from "../api/Api.js";
 import { FcGoogle } from "react-icons/fc";
 import { loginSuccess } from "@/redux/reducers/userSlice.js";
 import { useGoogleLogin } from "@react-oauth/google";
 
 const SignUp = () => {
     const [username, setUsername] = useState("");
-    const [usernameMessgae, setUsernameMessage] = useState("");
+    const [usernameMessage, setUsernameMessage] = useState("");
     const [isCheckingUsername, setIsCheckingUsername] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const debounced = useDebounceCallback(setUsername, 300);
 
-    // zod implementation
+    useEffect(() => {
+        const checkUsernameUnique = async () => {
+            if (username) {
+                setIsCheckingUsername(true);
+                setUsernameMessage("");
+                try {
+                    const response = await validateUsernameUnique(username);
+                    if (response.data.success) {
+                        setUsernameMessage(response.data.message);
+                    }
+                }
+                catch (error) {
+                    setUsernameMessage(
+                        error.response?.data.message || "Error checking username uniqueness!"
+                    );
+
+                    // toast.error("Error checking username uniqueness.", {
+                    //     description: error.response?.data.message
+                    // });
+                }
+                finally {
+                    setIsCheckingUsername(false);
+                }
+            }
+        };
+        checkUsernameUnique();
+    }, [username]);
+
+    // zod form implementation
     const form = useForm({
         resolver: zodResolver(signUpSchema),
         defaultValues: {
@@ -50,55 +77,27 @@ const SignUp = () => {
             password: "",
             confirmPassword: "",
             terms: false,
-            role: "buyer",
+            role: ["buyer"],
         },
     });
-
-    const [showPassword, setShowPassword] = useState(false);
-    const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
-
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const toggleConfirmPasswordVisibility = () =>
-        setShowConfirmPassword((prev) => !prev);
-
-    useEffect(() => {
-        const checkUsernameUnique = async () => {
-            if (username) {
-                setIsCheckingUsername(true);
-                setUsernameMessage("");
-                try {
-                    const response = await validateUsernameUnique(username);
-                    setUsernameMessage(response.data.message);
-                }
-                catch (error) {
-                    setUsernameMessage(
-                        error.response.data.message ||
-                        "Error checking username!"
-                    );
-                }
-                finally {
-                    setIsCheckingUsername(false);
-                }
-            }
-        };
-        checkUsernameUnique();
-    }, [username]);
 
     const onSubmit = async (data) => {
         setIsSubmitting(true);
 
         try {
             const response = await registerUser(data);
-            toast.success("Success", {
-                description: response.data.message,
-            });
 
-            navigate(`/verify-account-registration/${username}`);
+            if (response.data.success) {
+                toast.success("Sign Up Successful", {
+                    description: response.data.message,
+                });
+                navigate(`/verify-account-registration/${username}`);
+            }
         }
         catch (error) {
-            console.error("Error in sign up of user", error);
-            toast.error("Sign Up failed", {
-                description: error.response.data.message,
+            console.error("Error in sign up of user: ", error);
+            toast.error("Error signing up the user", {
+                description: error.response?.data.message,
             });
         }
         finally {
@@ -109,15 +108,20 @@ const SignUp = () => {
     const loginWithGoogle = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
-                const { data } = await loginUserWithGoogle(tokenResponse.access_token);
-                toast.success("Logged in successfully");
-
-                dispatch(loginSuccess(data));
-                navigate("/dashboard");
+                const response = await loginUserWithGoogle(tokenResponse.access_token);
+                if (response.data.success) {
+                    toast.success("Google Login Successful", {
+                        description: response.data.message,
+                    });
+                    dispatch(loginSuccess(response.data));
+                    navigate("/");
+                }
             }
             catch (error) {
-                console.error("Google Login Error:", error);
-                toast.error("Google login failed");
+                console.error("Error in google login: ", error);
+                toast.error("Error in google login", {
+                    description: error.response?.data.message
+                });
             }
         },
         onError: () => {
@@ -125,12 +129,15 @@ const SignUp = () => {
         },
     });
 
+    const togglePasswordVisibility = () => setShowPassword((prev) => !prev);
+    const toggleConfirmPasswordVisibility = () => setShowConfirmPassword((prev) => !prev);
+
     return (
-        <section className="flex justify-center items-center min-h-screen bg-gray-100 px-5 py-10 sm:px-6 lg:px-8">
-            <div className="w-full max-w-md bg-white rounded-lg shadow-lg">
+        <section className="min-h-screen flex justify-center items-center px-5 py-10 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md bg-white dark:bg-gray-900 border rounded-lg shadow-lg">
                 <Button
                     variant="ghost"
-                    className="relative top-2 left-2 text-gray-600 hover:text-blue-950"
+                    className="relative top-2 left-2 text-gray-600 dark:text-gray-400 hover:text-blue-950 dark:hover:text-gray-200 dark:hover:bg-gray-700"
                     onClick={() => navigate("/")}
                     aria-label="Back to home"
                 >
@@ -139,10 +146,10 @@ const SignUp = () => {
 
                 <div className="space-y-8 px-8 pb-8">
                     <div className="text-center">
-                        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900">
+                        <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-gray-100">
                             Leelame
                         </h1>
-                        <p className="mt-2 text-sm sm:text-base text-gray-600">
+                        <p className="mt-2 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                             Sign up to start your bidding adventure
                         </p>
                     </div>
@@ -188,17 +195,14 @@ const SignUp = () => {
                                                 <Loader2 className="animate-spin" />
                                             )}
                                             <p
-                                                className={`text-sm ${usernameMessgae ===
+                                                className={`text-sm ${usernameMessage ===
                                                     "Username is available"
-                                                    ? "text-green-500"
-                                                    : "text-red-500"
+                                                    ? "text-green-500 dark:text-green-400"
+                                                    : "text-red-500 dark:text-red-400"
                                                     }`}
                                             >
-                                                {usernameMessgae}
+                                                {usernameMessage}
                                             </p>
-                                            {/* <FormDescription>
-                                        This is your public display name.
-                                    </FormDescription> */}
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -257,7 +261,7 @@ const SignUp = () => {
                                                 <button
                                                     type="button"
                                                     onClick={togglePasswordVisibility}
-                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400  focus:outline-hidden focus:text-blue-600 dark:text-neutral-600 dark:focus:text-blue-500"
+                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
                                                 >
                                                     {showPassword ? (
                                                         <FaEye size={18} />
@@ -293,7 +297,7 @@ const SignUp = () => {
                                                     onClick={
                                                         toggleConfirmPasswordVisibility
                                                     }
-                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400  focus:outline-hidden focus:text-blue-600 dark:text-neutral-600 dark:focus:text-blue-500"
+                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
                                                 >
                                                     {showConfirmPassword ? (
                                                         <FaEye size={18} />
@@ -372,7 +376,7 @@ const SignUp = () => {
                                 Already have an account?{" "}
                                 <Link
                                     to="/login"
-                                    className="text-blue-600 hover:underline"
+                                    className="text-blue-600 dark:text-blue-500 hover:underline"
                                 >
                                     Login
                                 </Link>

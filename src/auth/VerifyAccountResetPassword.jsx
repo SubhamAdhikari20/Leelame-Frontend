@@ -43,26 +43,26 @@ const VerifyAccountResetPassword = () => {
                 code: data.code,
             });
 
-            toast("Success", {
-                description: response.data.message,
+            if (response.data.success) {
+                toast.success("Success", {
+                    description: response.data.message,
+                });
+                navigate(`/reset-password/${params.email}`);
+            }
+        }
+        catch (error) {
+            console.error("Error in verifying OTP for reseting password: ", error);
+            toast.error("Failed to verify OTP", {
+                description: error.response?.data.message,
             });
-
-            navigate(`/reset-password/${params.email}`);
-        } catch (error) {
-            console.error(
-                "Error in verifying OTP for reseting password",
-                error
-            );
-            toast("Failed to verify OTP", {
-                description: error.response.data.message,
-            });
-        } finally {
+        }
+        finally {
             setIsVerifying(false);
         }
     };
 
     return (
-        <section className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
+        <section className="min-h-screen flex justify-center items-center px-4">
             <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
                 <h1 className="text-2xl font-bold text-center mb-4">
                     Enter Verification Code

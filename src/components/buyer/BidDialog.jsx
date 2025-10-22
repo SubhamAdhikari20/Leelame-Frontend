@@ -35,11 +35,11 @@ const BidDialog = ({ open, onOpenChange, product, onPlaceBid }) => {
     });
 
     // Compute total dynamically
+    const bidAmount = Number(form.watch("bidAmount")) || 0;
+    const quantity = Number(form.watch("quantity")) || 1;
     const total = useMemo(() => {
-        const ba = Number(form.watch("bidAmount")) || 0;
-        const qty = Number(form.watch("quantity")) || 1;
-        return ba * qty;
-    }, [form.watch("bidAmount"), form.watch("quantity")]);
+        return bidAmount * quantity;
+    }, [bidAmount, quantity]);
 
 
     const handlePlaceBid = async (data) => {

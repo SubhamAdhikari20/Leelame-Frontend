@@ -40,24 +40,26 @@ const ForgotPassword = () => {
             });
 
             navigate(`/verify-account-reset-password/${data.email}`);
-        } catch (error) {
+        }
+        catch (error) {
             console.error("Error sending forgot password request", error);
             toast("Failed", {
                 description:
                     error.response.data.message ||
                     "Failed to send reset instructions",
             });
-        } finally {
+        }
+        finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <section className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-            <div className="w-full max-w-md bg-white rounded-lg shadow-md">
+        <section className="flex justify-center items-center px-5 py-10 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md bg-white dark:bg-gray-900 border rounded-lg shadow-md">
                 <Button
                     variant="ghost"
-                    className="relative top-2 left-2 text-gray-600 hover:text-blue-950"
+                    className="relative top-2 left-2 text-gray-600 dark:text-gray-400 hover:text-blue-950 dark:hover:text-gray-200 dark:hover:bg-gray-700"
                     onClick={() => navigate("/login")}
                     aria-label="Back to login"
                 >
@@ -65,10 +67,10 @@ const ForgotPassword = () => {
                 </Button>
 
                 <div className="px-8 pb-8">
-                    <h1 className="text-3xl font-bold text-center mb-4">
+                    <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-gray-100 mb-4">
                         Forgot Password
                     </h1>
-                    <p className="text-sm text-center text-gray-600 mb-6">
+                    <p className="text-sm text-center text-gray-600 dark:text-gray-400 mb-6">
                         Enter your email address to receive password reset
                         instructions.
                     </p>
@@ -120,7 +122,7 @@ const ForgotPassword = () => {
                             Back to login?{" "}
                             <Link
                                 to="/login"
-                                className="text-blue-600 hover:underline"
+                                className="text-blue-600 dark:text-blue-500 hover:underline"
                             >
                                 Login
                             </Link>

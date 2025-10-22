@@ -3,6 +3,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* toast "sonner"(shadcn ui) close button */
+[data-sonner-toast][data-styled="true"] [data-close-button] {
+  right: -15px !important;
+  left: auto !important;
+}
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -122,6 +128,30 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
+
+/* .dark .rnf-notification-feed {
+  background-color: var(--background) !important;
+  color: var(--foreground) !important;
+  border: 1px solid white !important;
+  border-radius: 2px;
+}
+
+.dark .rnf-notification-feed__type {
+  color: var(--foreground) !important;
+}
+
+.dark .rnf-empty-feed__header {
+  color: rgb(121, 121, 121) !important;
+}
+
+.dark .rnf-notification-feed__knock-branding a {
+  color: rgb(182, 177, 177) !important;
+}
+
+.dark .rnf-notification-feed__knock-branding a:hover {
+  color: rgb(228, 223, 223) !important;
+  background-color: #39393a !important;
+} */
 
 @layer base {
   * {

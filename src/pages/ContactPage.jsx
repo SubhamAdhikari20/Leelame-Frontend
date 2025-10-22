@@ -32,12 +32,12 @@ const ContactPage = () => {
     };
 
     return (
-        <section className="flex justify-center items-center min-h-screen p-4 sm:p-6 lg:p-8">
-            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 bg-[#2D3748] p-8 rounded-lg shadow-lg">
+        <section className="flex justify-center items-center p-4 sm:p-6 lg:p-8">
+            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-8 bg-white dark:bg-gray-900 border p-8 rounded-lg shadow-lg">
                 {/* Informational Section */}
                 <div className="space-y-5">
-                    <h1 className="text-3xl font-bold text-white">Contact Us</h1>
-                    <p className="text-[#A0AEC0]">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Contact Us</h1>
+                    <p className="text-gray-500 dark:text-[#A0AEC0]">
                         Whether you’re a bidder, a seller, or a partner — we’d love to hear from you. Have a question, a suggestion, or want to collaborate? Reach out and we’ll get back to you soon.
                     </p>
                     <img
@@ -48,17 +48,17 @@ const ContactPage = () => {
 
                     <div className="flex items-baseline-last justify-between">
                         <div>
-                            <h3 className="text-lg font-semibold text-white">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
                                 Office Address
                             </h3>
-                            <p className="text-gray-400">Kathmandu, Nepal</p>
+                            <p className="text-gray-600 dark:text-gray-400">Kathmandu, Nepal</p>
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-semibold text-white mt-4">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mt-4">
                                 Business Inquiries
                             </h3>
-                            <p className="text-gray-400">
+                            <p className="text-gray-600 dark:text-gray-400">
                                 support@leelame.com <br />
                                 +977 9800000000
                             </p>
@@ -74,12 +74,12 @@ const ContactPage = () => {
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[#CBD5E0]">Full Name</FormLabel>
+                                    <FormLabel className="text-gray-600 dark:text-[#CBD5E0]">Full Name</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Your Name"
+                                            placeholder="Name"
                                             {...field}
-                                            className="bg-white text-[#1A202C] placeholder:text-[#A0AEC0]"
+                                            className="bg-white text-[#1A202C] dark:text-gray-100 placeholder:text-[#A0AEC0]"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -91,13 +91,13 @@ const ContactPage = () => {
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[#CBD5E0]">Email</FormLabel>
+                                    <FormLabel className="text-gray-600 dark:text-[#CBD5E0]">Email</FormLabel>
                                     <FormControl>
                                         <Input
                                             type="email"
                                             placeholder="Email"
                                             {...field}
-                                            className="bg-white text-[#1A202C] placeholder:text-[#A0AEC0]"
+                                            className="bg-white text-[#1A202C] dark:text-gray-100 placeholder:text-[#A0AEC0]"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -109,12 +109,12 @@ const ContactPage = () => {
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[#CBD5E0]">Phone Number</FormLabel>
+                                    <FormLabel className="text-gray-600 dark:text-[#CBD5E0]">Phone Number</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Your 10-digit Indian Number"
+                                            placeholder="Contact"
                                             {...field}
-                                            className="bg-white text-[#1A202C] placeholder:text-[#A0AEC0]"
+                                            className="bg-white text-[#1A202C] dark:text-gray-100 placeholder:text-[#A0AEC0]"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -126,12 +126,12 @@ const ContactPage = () => {
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel className="text-[#CBD5E0]">Message</FormLabel>
+                                    <FormLabel className="text-gray-600 dark:text-[#CBD5E0]">Message</FormLabel>
                                     <FormControl>
                                         <Textarea
                                             placeholder="Type your message here"
                                             {...field}
-                                            className="bg-white text-[#1A202C] placeholder:text-[#A0AEC0] min-h-25 max-h-50"
+                                            className="bg-white text-[#1A202C] dark:text-gray-100 placeholder:text-[#A0AEC0] min-h-25 max-h-50"
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -142,7 +142,7 @@ const ContactPage = () => {
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full bg-white text-[#1A202C] hover:bg-gray-200"
+                                className="w-full"
                             >
                                 {isSubmitting ? (
                                     <>

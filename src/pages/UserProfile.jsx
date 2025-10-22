@@ -1,5 +1,5 @@
 // frontend/src/pages/UserProfile.jsx
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../components/ui/button.jsx";
 import {
@@ -31,7 +31,7 @@ import { useDebounceValue, useDebounceCallback } from "usehooks-ts";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { editUserDetails, deleteUser, validateUsernameUnique, fetchCurrentUser, uploadProfilePicture } from "../api/Api.js";
-import { logout, updateUserDetails } from "../redux/reducers/userSlice.js";
+import { logout, updateUserDetails, updateProfilePictureSuccess } from "../redux/reducers/userSlice.js";
 
 
 const UserProfile = ({ currentUser }) => {
@@ -49,7 +49,7 @@ const UserProfile = ({ currentUser }) => {
     const [isCheckingUsername, setIsCheckingUsername] = useState(false);
     const debounced = useDebounceCallback(setUsername, 300);
 
-    const getCurrentUser = async () => {
+    const getCurrentUser = useCallback(async () => {
         try {
             const response = await fetchCurrentUser();
             // console.log("User data:", res.data.user);
@@ -59,11 +59,17 @@ const UserProfile = ({ currentUser }) => {
             console.error("Failed to fetch user:", error);
             // dispatch(logout());
         }
-    };
+    }, [dispatch]);
 
     useEffect(() => {
         getCurrentUser();
-    }, []);
+        // toast.success("Success", {
+        //     description: "User data fetched successfully!"
+        // });
+        // toast.error("Error updating user details", {
+        //     description: "TypeError: User.findyId is not a function"
+        // });
+    }, [getCurrentUser]);
 
     const form = useForm({
         resolver: zodResolver(updateUserDetailsSchema),
@@ -82,10 +88,14 @@ const UserProfile = ({ currentUser }) => {
                 setUsernameMessage("");
                 try {
                     const response = await validateUsernameUnique(username);
-                    setUsernameMessage(response.data.message);
+                    if (response.data.success) {
+                        setUsernameMessage(response.data.message);
+                    }
                 }
                 catch (error) {
-                    setUsernameMessage(error.response?.data.message || "Error checking username!");
+                    setUsernameMessage(
+                        error.response?.data.message || "Error checking username uniqueness!"
+                    );
                 }
                 finally {
                     setIsCheckingUsername(false);
@@ -113,21 +123,22 @@ const UserProfile = ({ currentUser }) => {
         try {
             const response = await editUserDetails(currentUser._id, data);
 
-            toast('Success', {
-                description: response.data.message
-            });
-            await fetchCurrentUser();
+            if (response.data.success) {
+                toast.success("Success", {
+                    description: response.data.message
+                });
+                await getCurrentUser();
 
-            if (response.data.user?.username !== currentUser?.username) {
-                dispatch(logout());
-                navigate(`/verify-account-registration/${response.data.user?.username}`);
+                if (response.data.user?.username !== currentUser?.username) {
+                    dispatch(logout());
+                    navigate(`/verify-account-registration/${response.data.user?.username}`);
+                }
             }
         }
         catch (error) {
-            console.error("Error in sign up of user", error);
-            let errorMessage = error.response?.data.message;
-            toast('Sign Up failed', {
-                description: errorMessage
+            console.error("Error updating user details: ", error);
+            toast.error("Error updating user details", {
+                description: error.response?.data.message
             });
         }
         finally {
@@ -149,10 +160,12 @@ const UserProfile = ({ currentUser }) => {
         try {
             const response = await deleteUser(userId);
             toast.success(response.data.message);
-            signOut();
         }
         catch (error) {
-            toast.error(error.response?.data.message);
+            console.error("Error deleting user account: ", error);
+            toast.error("Error deleting user account: ", {
+                description: error.response?.data.message
+            });
         }
     };
 
@@ -176,8 +189,8 @@ const UserProfile = ({ currentUser }) => {
             setSelectedFile(null);
         }
         catch (error) {
-            // console.error("Image upload failed", error);
-            toast.error(`Image upload failed: ${error.response?.data.message || "Unknown error"}`);
+            console.error("Image upload failed", error);
+            toast.error(`Image upload failed: ${error.response?.data.message}`);
         }
         finally {
             setIsUploadingImage(false);
@@ -185,11 +198,11 @@ const UserProfile = ({ currentUser }) => {
     }
 
     return (
-        <section className="w-full xl:max-w-7xl bg-[#d3ecdc] rounded-xl shadow-lg p-5">
-            <h1 className="text-2xl font-bold text-gray-800 mb-5">My Profile</h1>
+        <div className="w-full xl:max-w-7xl bg-[#d3ecdc] dark:bg-gray-900 border rounded-xl shadow-lg p-5">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-5">My Profile</h1>
             <div className="flex flex-col xl:flex-row xl:justify-evenly gap-4 justify-center">
-                <div className="flex flex-col justify-center items-center gap-4">
-                    <Avatar className="h-30 w-30 lg:h-45 lg:w-45 border-2 border-gray-900">
+                <div className="flex flex-col justify-center items-center gap-4 xl:min-w-[310px]">
+                    <Avatar className="h-30 w-30 lg:h-45 lg:w-45 border-2 border-gray-900 dark:border-gray-100">
                         <AvatarImage
                             src={preview ? preview : (currentUser?.profilePictureUrl || undefined)}
                             alt={currentUser?.fullName || currentUser?.username || "Owner"}
@@ -208,7 +221,7 @@ const UserProfile = ({ currentUser }) => {
                         <div className="flex flex-row! items-center gap-2">
                             <Button
                                 type="button"
-                                className="bg-gray-400 hover:bg-gray-500"
+                                className="bg-gray-400 dark:bg-gray-300 hover:bg-gray-500 dark:hover:bg-gray-200"
                                 disabled={isUploadingImage}
                                 onClick={() => fileInputRef.current?.click()}
                             >
@@ -234,6 +247,7 @@ const UserProfile = ({ currentUser }) => {
                                         setSelectedFile(null);
                                         setPreview(currentUser?.profilePictureUrl || "");
                                     }}
+                                    className="dark:bg-red-600 hover:bg-red-700 dark:hover:bg-red-700"
                                 >
                                     Remove
                                 </Button>
@@ -242,7 +256,7 @@ const UserProfile = ({ currentUser }) => {
 
                         <Button
                             variant="outline"
-                            className="text-sm text-gray-500"
+                            className="text-sm text-gray-500 dark:text-gray-200"
                             onClick={handleUploadImage}
                             disabled={!selectedFile || isUploadingImage}
                         >
@@ -260,10 +274,10 @@ const UserProfile = ({ currentUser }) => {
                         </Button>
                     </div>
 
-                    <div className="mt-auto xl:w-full">
+                    <div className="mt-auto xl:w-full xl:flex xl:items-center xl:justify-center">
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
-                                <Button type="button" variant="destructive" className="w-full">
+                                <Button type="button" variant="destructive" className="hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700">
                                     <Trash2 className="h-4 w-4 mr-2" /> Delete Account
                                 </Button>
                             </AlertDialogTrigger>
@@ -277,7 +291,7 @@ const UserProfile = ({ currentUser }) => {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => handleDelete(Number(currentUser?.id))}>
+                                    <AlertDialogAction className="bg-red-600 hover:bg-red-700 dark:text-gray-100" onClick={() => handleDelete(Number(currentUser?.id))}>
                                         Delete
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
@@ -286,7 +300,7 @@ const UserProfile = ({ currentUser }) => {
                     </div>
                 </div>
 
-                <div className="w-full flex-1 max-w-2xl xl:max-w-xl space-y-8 bg-white p-8 rounded-lg shadow-lg">
+                <div className="w-full flex-1 max-w-2xl xl:max-w-xl space-y-8 bg-white dark:bg-gray-800 border dark:border-gray-600 p-8 rounded-lg shadow-lg">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <FormField
@@ -386,7 +400,7 @@ const UserProfile = ({ currentUser }) => {
                     </Form>
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
 

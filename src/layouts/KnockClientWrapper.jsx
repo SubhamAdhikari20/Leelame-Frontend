@@ -9,19 +9,6 @@ import { updateKnockUser } from "../api/Api.js";
 const KnockClientWrapper = ({ children }) => {
     const { currentUser } = useSelector((state) => state.user);
 
-    // Validate environment variables at runtime
-    const apiKey = import.meta.env.VITE_KNOCK_PUBLIC_API_KEY;
-    const feedId = import.meta.env.VITE_KNOCK_PUBLIC_FEED_ID;
-
-    if (!apiKey) {
-        console.error("VITE_KNOCK_PUBLIC_API_KEY is missing. Please set it in your .env file.");
-        return <>{children}</>;
-    }
-    if (!feedId) {
-        console.error("VITE_KNOCK_PUBLIC_FEED_ID is missing. Please set it in your .env file.");
-        return <>{children}</>;
-    }
-
     useEffect(() => {
         const createAndUpdateKnockUser = async () => {
             if (!currentUser?._id) return;
@@ -44,6 +31,19 @@ const KnockClientWrapper = ({ children }) => {
 
         createAndUpdateKnockUser();
     }, [currentUser]);
+
+    // Validate environment variables at runtime
+    const apiKey = import.meta.env.VITE_KNOCK_PUBLIC_API_KEY;
+    const feedId = import.meta.env.VITE_KNOCK_PUBLIC_FEED_ID;
+
+    if (!apiKey) {
+        console.error("VITE_KNOCK_PUBLIC_API_KEY is missing. Please set it in your .env file.");
+        return <>{children}</>;
+    }
+    if (!feedId) {
+        console.error("VITE_KNOCK_PUBLIC_FEED_ID is missing. Please set it in your .env file.");
+        return <>{children}</>;
+    }
 
     if (!currentUser?._id) {
         return <>{children}</>;
