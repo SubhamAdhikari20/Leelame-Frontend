@@ -10,9 +10,14 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../components/ui/form";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+} from "../components/ui/form.jsx";
+import {
+    InputOTP,
+    InputOTPGroup,
+    InputOTPSlot,
+} from "../components/ui/input-otp.jsx";
+import { Input } from "../components/ui/input.jsx";
+import { Button } from "../components/ui/button.jsx";
 import { useNavigate, useParams } from "react-router-dom";
 import { verifyAccountRegistrationSchema } from "./../schemas/auth/verifyAccountRegistrationSchema.js";
 import { verifyAccountForRegistration } from "../api/Api.js";
@@ -57,14 +62,14 @@ const VerifyAccountRegistration = () => {
         }
     };
     return (
-        <section className="flex justify-center items-center">
+        <section className="flex justify-center items-center px-5 py-20 sm:px-6 lg:px-8">
             <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-900 border rounded-lg shadow-md">
                 <div className="text-center">
-                    <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-4">
+                    <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-4 text-gray-900 dark:text-gray-100">
                         Verify Your Account
                     </h1>
-                    <p className="mb-6">
-                        Enter the verification code sent to your email
+                    <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
+                        Enter the verification code sent to your email for account registration
                     </p>
                 </div>
                 <div>
@@ -80,10 +85,24 @@ const VerifyAccountRegistration = () => {
                                     <FormItem>
                                         <FormLabel>Verification Code</FormLabel>
                                         <FormControl>
-                                            <Input
-                                                placeholder="Enter the code"
-                                                {...field}
-                                            />
+                                            <div className="flex justify-center mb-6">
+                                                <InputOTP
+                                                    maxLength={6}
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                >
+                                                    <InputOTPGroup>
+                                                        {[...Array(6)].map(
+                                                            (_, i) => (
+                                                                <InputOTPSlot
+                                                                    key={i}
+                                                                    index={i}
+                                                                />
+                                                            )
+                                                        )}
+                                                    </InputOTPGroup>
+                                                </InputOTP>
+                                            </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>

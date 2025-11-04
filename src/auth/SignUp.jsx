@@ -83,10 +83,8 @@ const SignUp = () => {
 
     const onSubmit = async (data) => {
         setIsSubmitting(true);
-
         try {
             const response = await registerUser(data);
-
             if (response.data.success) {
                 toast.success("Sign Up Successful", {
                     description: response.data.message,
@@ -194,15 +192,17 @@ const SignUp = () => {
                                             {isCheckingUsername && (
                                                 <Loader2 className="animate-spin" />
                                             )}
-                                            <p
-                                                className={`text-sm ${usernameMessage ===
-                                                    "Username is available"
-                                                    ? "text-green-500 dark:text-green-400"
-                                                    : "text-red-500 dark:text-red-400"
-                                                    }`}
-                                            >
-                                                {usernameMessage}
-                                            </p>
+                                            {username && (
+                                                <p
+                                                    className={`text-sm ${usernameMessage ===
+                                                        "Username is available"
+                                                        ? "text-green-500 dark:text-green-400"
+                                                        : "text-red-500 dark:text-red-400"
+                                                        }`}
+                                                >
+                                                    {usernameMessage}
+                                                </p>
+                                            )}
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -261,7 +261,7 @@ const SignUp = () => {
                                                 <button
                                                     type="button"
                                                     onClick={togglePasswordVisibility}
-                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
+                                                    className="cursor-pointer absolute inset-y-0 end-2.5 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
                                                 >
                                                     {showPassword ? (
                                                         <FaEye size={18} />
@@ -297,7 +297,7 @@ const SignUp = () => {
                                                     onClick={
                                                         toggleConfirmPasswordVisibility
                                                     }
-                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
+                                                    className="cursor-pointer absolute inset-y-0 end-2.5 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
                                                 >
                                                     {showConfirmPassword ? (
                                                         <FaEye size={18} />
@@ -376,7 +376,7 @@ const SignUp = () => {
                                 Already have an account?{" "}
                                 <Link
                                     to="/login"
-                                    className="text-blue-600 dark:text-blue-500 hover:underline"
+                                    className="text-blue-600 dark:text-blue-600 hover:underline"
                                 >
                                     Login
                                 </Link>

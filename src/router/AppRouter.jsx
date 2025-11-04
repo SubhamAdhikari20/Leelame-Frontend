@@ -26,6 +26,7 @@ import VerifyAccountResetPassword from "../auth/VerifyAccountResetPassword.jsx";
 import ResetPassword from "../auth/ResetPassword.jsx";
 import ProfileLayout from "../layouts/ProfileLayout.jsx";
 import ProfileDashboard from "../pages/ProfileDashboard.jsx";
+import BecomeSeller from "../pages/BecomeSeller.jsx";
 
 
 const AppRouter = () => {
@@ -133,6 +134,7 @@ const AppRouter = () => {
                         <Route path="/products" element={<ProductPage currentUser={currentUser} />} />
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/contact" element={<ContactPage />} />
+                        <Route path="/become-seller" element={<BecomeSeller />} />
 
                         <Route path="/sign-up" element={<SignUp />} />
                         <Route path="/login" element={<Login />} />

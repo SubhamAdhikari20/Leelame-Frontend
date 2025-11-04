@@ -63,12 +63,12 @@ const ResetPassword = () => {
     const toggleConfirmPasswordVisibility = () => setShowConfirmPassword((prev) => !prev);
 
     return (
-        <section className="flex justify-center items-center min-h-screen bg-gray-100 px-4">
-            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-                <h1 className="text-2xl font-bold text-center mb-4">
+        <section className="flex justify-center items-center px-5 py-20 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md p-8 bg-white dark:bg-gray-900 border rounded-lg shadow-md">
+                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100">
                     Reset Password
                 </h1>
-                <p className="text-sm text-center text-gray-600 mb-6">
+                <p className="text-sm text-center text-gray-600 dark:text-gray-400 mb-6">
                     Enter your new password to reset your password.
                 </p>
 
@@ -98,7 +98,7 @@ const ResetPassword = () => {
                                         <button
                                             type="button"
                                             onClick={togglePasswordVisibility}
-                                            className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400  focus:outline-hidden focus:text-blue-600 dark:text-neutral-600 dark:focus:text-blue-500"
+                                            className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
                                         >
                                             {showPassword ? (
                                                 <FaEye size={18} />
@@ -134,7 +134,7 @@ const ResetPassword = () => {
                                             onClick={
                                                 toggleConfirmPasswordVisibility
                                             }
-                                            className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400  focus:outline-hidden focus:text-blue-600 dark:text-neutral-600 dark:focus:text-blue-500"
+                                            className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
                                         >
                                             {showConfirmPassword ? (
                                                 <FaEye size={18} />

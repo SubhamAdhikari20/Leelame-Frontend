@@ -207,10 +207,8 @@ const Navbar = ({ currentUser }) => {
                     )}
                 </Button>
 
-                <Link to="/seller">
-                    <h1 className="text-sm font-semibold text-green-500 dark:text-green-400 hover:text-green-600 hover:dark:text-green-300 hover:underline transition-all duration-200">
-                        Become a seller
-                    </h1>
+                <Link to="/become-seller" className="hidden sm:inline text-sm font-semibold text-green-500 dark:text-green-400 hover:text-green-600 hover:dark:text-green-300 hover:underline transition-all duration-200">
+                    Become a seller
                 </Link>
 
                 {currentUser ? (
@@ -477,6 +475,10 @@ const Navbar = ({ currentUser }) => {
                             </Link>
                         </div>
                     )}
+
+                    <Link to="/become-seller" className="sm:hidden text-sm font-semibold text-green-500 dark:text-green-400 hover:text-green-600 hover:dark:text-green-300 hover:underline transition-all duration-200">
+                        Become a seller
+                    </Link>
                 </div>
             </nav>
         </header>

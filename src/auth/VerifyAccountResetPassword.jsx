@@ -9,8 +9,8 @@ import {
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
-} from "../components/ui/input-otp";
-import { Button } from "../components/ui/button";
+} from "../components/ui/input-otp.jsx";
+import { Button } from "../components/ui/button.jsx";
 import {
     Form,
     FormControl,
@@ -18,7 +18,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "../components/ui/form";
+} from "../components/ui/form.jsx";
 import { verifyAccountResetPasswordSchema } from "./../schemas/auth/verifyAccountResetPasswordSchema.js";
 import { verifyAccountForResetPassword } from "../api/Api.js";
 
@@ -62,13 +62,13 @@ const VerifyAccountResetPassword = () => {
     };
 
     return (
-        <section className="min-h-screen flex justify-center items-center px-4">
-            <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-                <h1 className="text-2xl font-bold text-center mb-4">
+        <section className="flex justify-center items-center px-5 py-20 sm:px-6 lg:px-8">
+            <div className="w-full max-w-md p-8 bg-white dark:bg-gray-900 border rounded-lg shadow-md">
+                <h1 className="text-3xl sm:text-4xl font-bold text-center mb-4 text-gray-900 dark:text-gray-100">
                     Enter Verification Code
                 </h1>
-                <p className="text-center text-sm text-gray-600 mb-6">
-                    Please check your email for a 6-digit code.
+                <p className="text-center text-sm text-gray-600 dark:text-gray-400 mb-6">
+                    Please check your email for a 6-digit code for reset password.
                 </p>
                 <Form {...form}>
                     <form
@@ -80,7 +80,7 @@ const VerifyAccountResetPassword = () => {
                             control={form.control}
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email Address</FormLabel>
+                                    <FormLabel>Verification Code</FormLabel>
                                     <FormControl>
                                         <div className="flex justify-center mb-6">
                                             <InputOTP

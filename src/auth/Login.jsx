@@ -210,7 +210,7 @@ const Login = ({ currentUser }) => {
                                                     onClick={
                                                         togglePasswordVisibility
                                                     }
-                                                    className="cursor-pointer absolute inset-y-0 end-2.5 z-20 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
+                                                    className="cursor-pointer absolute inset-y-0 end-2.5 text-gray-400 focus:outline-hidden focus:text-blue-600 dark:text-neutral-500 dark:focus:text-blue-500"
                                                 >
                                                     {showPassword ? (
                                                         <FaEye size={18} />
